@@ -1,0 +1,45 @@
+/*Tab pane cac project popular */
+.PopularTabPane{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+   
+
+}
+
+
+
+
+/*List cac popular prject ben canh*/
+.ant-list.ant-list-split{
+            width: 450px;
+
+}
+
+.ant-spin-container{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+
+}
+
+/*cac item trong list popular project */
+.ant-list-item{
+    width: 440px;
+    margin: 0px!important;
+ 
+}
+
+
+/*---------------------- Project popular nhat-----------------*/
+.MostPopularProjectContainer{
+    width: 600px;
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 50px;
+    position: relative;
+}

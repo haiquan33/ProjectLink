@@ -1,0 +1,20 @@
+
+
+/*tags input
+.ant-form.ant-form-horizontal>.ant-row.ant-form-item>.ant-form-item-control-wrapper.ant-col-xs-24.ant-col-sm-16>.ant-form-item-control>.react-tagsinput{
+    height: 50px;
+}
+*/
+
+/*tags input items */
+.ant-form.ant-form-horizontal>.ant-row.ant-form-item>.ant-form-item-control-wrapper.ant-col-xs-24.ant-col-sm-16>.ant-form-item-control>.react-tagsinput>span>.react-tagsinput-tag{
+    height: 40px;
+    background:var(--primary-color);
+    color: white;
+}
+
+
+/*submit button*/
+.ant-btn.ant-btn-primary{
+    background:var(--primary-color);
+}

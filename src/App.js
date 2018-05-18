@@ -7,49 +7,57 @@ import './App.css';
 
 import { Layout, Menu, Breadcrumb } from 'antd';
 
-//Test Contract
-// import { ratingContract } from "./setup.js";
-// import {ShowMovies } from "./ShowMovies";
+
+import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
+
+
+//other components
+import DashboardContainer from './Components/Pages/ProblemOwner/Dashboard/DashboardContainer'
+import ProblemViewPage from './Components/Pages/ProblemViewPage/ProblemViewPage';
+//Redux component
+import { connect } from 'react-redux'
+
+
+
+
+
+
 
 class App extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
-  
- 
+
+
   }
 
- //Test Contract 
-// componentWillMount(){
-//   let movie=this.state.movies.map((el)=>{
-//       let votes=ratingContract.totalVotesFor(el.name).toNumber()
-//       return Object.assign({},el,{rating:votes})
 
-//     })
- 
-//   this.setState({movies:movie});
-// }  
-
-//Test Contract
-// handleVoting(movie){
-//     ratingContract.voteForMovie(movie)
-//     let votes=ratingContract.totalVotesFor(movie).toNumber()
-//     this.setState({movies:this.state.movies.map(
-//       (el)=>el.name===movie? Object.assign({},el,{rating:votes}):el
-    
-//     )});
-//   }
   render() {
+
     return (
       <div className="App">
-            <Layout>
-                <Header/>
-                <Layout.Content>
-                <Mainpage/>
-                </Layout.Content>
-            </Layout>
+        <Layout>
+          <Header userInfo={this.props.userInfo} />
+          <Layout.Content>
+            
+            <Switch>
+              <Route exact path='/' component={Mainpage} />
+              <Route path='/dashboard' component={DashboardContainer} />
+              <Route path='/problem/:problemid' component={ProblemViewPage}/>
+              <Redirect to="/404" />
+            </Switch>
+          </Layout.Content>
+        </Layout>
       </div>
     );
   }
 }
 
-export default App;
+function mapState2Props(state) {
+  return {
+    userInfo: state.accountReducer.userInfo,
+
+
+  };
+}
+
+export default withRouter(connect(mapState2Props)(App));

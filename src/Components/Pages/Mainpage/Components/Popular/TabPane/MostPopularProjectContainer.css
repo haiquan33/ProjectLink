@@ -1,0 +1,13 @@
+.ProjectImage{
+            width: 400px;
+            height: 400px;
+            object-fit: cover ;
+}
+
+.Title {
+    position: absolute;
+    bottom: 50px;
+    right: 300px;
+    color: white;
+    
+}

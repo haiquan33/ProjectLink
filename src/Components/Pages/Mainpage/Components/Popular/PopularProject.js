@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Tabs } from 'antd';
 
+import PopularTabPane from './TabPane/PopularTabPane'
 
 import './PopularProject.css';
 const TabPane = Tabs.TabPane;
@@ -13,16 +14,31 @@ class PopularProject extends Component {
     }
 
     render() {
+        const data = [
+            {
+                title: 'Ant Design Title 1',
+            },
+            {
+                title: 'Ant Design Title 2',
+            },
+            {
+                title: 'Ant Design Title 3',
+            },
+            {
+                title: 'Ant Design Title 4',
+            },
+        ];
+
         return (
             <div >
                 <Tabs defaultActiveKey="ALL" >
-                    <TabPane tab="ALL" key="ALL">Content of Tab Pane 1</TabPane>
-                    <TabPane tab="IT" key="IT">Content of Tab Pane 2</TabPane>
-                    <TabPane tab="PHYSICS" key="PHYSICS">Content of Tab Pane 3</TabPane>
-                    <TabPane tab="MATH" key="MATH">Content of Tab Pane 4</TabPane>
-                    <TabPane tab="BIOLOGY" key="BIOLOGY">Content of Tab Pane 4</TabPane>
-                    <TabPane tab="ENVIROMENT" key="ENVIROMENT">Content of Tab Pane 5</TabPane>
-                    <TabPane tab="OTHERS" key="OTHERS">Content of Tab Pane 5</TabPane>
+                    <TabPane tab="ALL" key="ALL"><PopularTabPane faculty="ALL"  data={this.props.resultProblemList} /> </TabPane>
+                    <TabPane tab="IT" key="IT"><PopularTabPane faculty="IT" data={this.props.resultProblemList} /></TabPane>
+                    <TabPane tab="PHYSICS" key="PHYSICS"><PopularTabPane faculty="PHYSICS" data={this.props.resultProblemList} /></TabPane>
+                    <TabPane tab="MATH" key="MATH"><PopularTabPane faculty="MATH" data={this.props.resultProblemList} /></TabPane>
+                    <TabPane tab="BIOLOGY" key="BIOLOGY"><PopularTabPane faculty="BIOLOGY" data={this.props.resultProblemList}/></TabPane>
+                    <TabPane tab="ENVIROMENT" key="ENVIROMENT"><PopularTabPane faculty="ENVIROMENT" data={this.props.resultProblemList} /></TabPane>
+                    <TabPane tab="OTHERS" key="OTHERS"><PopularTabPane faculty="OTHERS" data={this.props.resultProblemList} /></TabPane>
                 </Tabs>
             </div>
         );
