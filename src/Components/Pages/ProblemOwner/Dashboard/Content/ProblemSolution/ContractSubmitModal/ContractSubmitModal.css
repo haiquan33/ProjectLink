@@ -2,7 +2,20 @@
     position: relative;
 }
 
-
+.ContractModalFooter{
+  display: flex;
+  flex-direction: row;
+ 
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+.ContractModalFooter>.ant-btn.ant-btn-primary{
+ margin: 5px;
+ 
+}
+.ContractModalFooter>.ant-btn.ant-btn-default{
+  margin: 5px;
+ }
 .m-signature-pad {
   position: absolute;
   font-size: 10px;

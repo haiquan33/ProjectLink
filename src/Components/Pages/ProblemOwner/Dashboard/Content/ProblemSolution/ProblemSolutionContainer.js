@@ -32,7 +32,7 @@ handlecloseSolutionDetailModal() {
 
   render() {
     return (<div>
-             {this.props.resultSolutionList?<SolutionList data={this.props.resultSolutionList} match={this.props.match} showSolutionDetailModal={this.showSolutionDetailModal}/>:null} 
+             {this.props.resultSolutionList?<SolutionList ProblemOwnerID={this.props.userInfo.uid} submit_contract={this.props.submit_contract} data={this.props.resultSolutionList} match={this.props.match} showSolutionDetailModal={this.showSolutionDetailModal}/>:null} 
              <Modal
                     visible={this.state.showSolutionDetail}
                     footer={null}

@@ -19,7 +19,7 @@ import {
 const Problem_Table = "Problems";
 const AccountData_Table = "AccountData";
 const Problem_Solution_Table = "ProblemSolution";
-
+const Problem_Contract_Table="ProblemContract";
 export function loginGG() {
     return (dispatch) => {
         auth.signInWithPopup(Authprovider)
@@ -148,6 +148,29 @@ export function get_solution_list(problemID) {
             if (list.length>=1)
             dispatch(set_result_solution_list(list))
             else dispatch(set_result_solution_list(null))
+        })
+    }
+}
+
+
+//----------------------CONTRACT---------------------
+export function submit_contract(data) {
+    return (dispatch) => {
+
+        firestore.collection(Problem_Contract_Table).doc(data.problemID).set({
+            ContractFilename:data.ContractFilename,
+            ProblemOwnerID:data.ProblemOwnerID,
+            ProblemOwnerSign:data.ProblemOwnerSign,
+           
+            SolutionOwnerID:data.SolutionOwnerID,
+            SolutionOwnerSign:null,
+    
+            deadline_1:data.deadline_1,
+            deadline_2:data.deadline_2,
+            deadline_3:data.deadline_3,
+
+
+
         })
     }
 }

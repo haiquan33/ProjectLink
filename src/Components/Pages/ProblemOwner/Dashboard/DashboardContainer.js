@@ -23,7 +23,7 @@ import ProblemSolutionContainer from './Content/ProblemSolution/ProblemSolutionC
 
 
 //Redux
-import {get_solution_list} from '../../../../Redux/service';
+import {get_solution_list,submit_contract} from '../../../../Redux/service';
 
 
 //Assets
@@ -75,7 +75,7 @@ class DashboardContainer extends Component {
                         <Switch>
 
                             <Route exact path={`${this.props.match.url}/postedjobs/:postedType`} render={routeProps => <ProblemListContainer {...routeProps}/>} />
-                            <Route exact path={`${this.props.match.url}/postedjobs/all/:problemID/solutions/` } render={routeProps => <ProblemSolutionContainer resultSolutionList={this.props.resultSolutionList} get_solution_list={this.props.get_solution_list} {...routeProps} />}/> 
+                            <Route exact path={`${this.props.match.url}/postedjobs/all/:problemID/solutions/` } render={routeProps => <ProblemSolutionContainer userInfo={this.props.userInfo} submit_contract={this.props.submit_contract} resultSolutionList={this.props.resultSolutionList} get_solution_list={this.props.get_solution_list} {...routeProps} />}/> 
                         </Switch> : <Spin/>}
 
                     </Content>
@@ -100,7 +100,8 @@ function mapState2Props(state) {
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({
         push,
-        get_solution_list
+        get_solution_list,
+        submit_contract
 
     }, dispatch)
 
