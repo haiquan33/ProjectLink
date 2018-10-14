@@ -1,0 +1,16 @@
+.DetailTable{
+    display: none;
+   
+}
+
+.PassandSubmit{
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+}
+
+.PassandSubmit>.ant-btn.btnSubmit.ant-btn-submit{
+    height: 65px;
+    margin-left: 5px;
+    
+}

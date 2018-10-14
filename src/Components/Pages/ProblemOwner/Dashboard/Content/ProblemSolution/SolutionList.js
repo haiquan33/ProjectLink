@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import './JobList.css'
-import JobItem from './JobItem'
+import './SolutionList.css'
+import SolutionItem from './SolutionItem'
 
 //Ant
 import { Row, Col, Pagination, List, Affix } from 'antd';
 
-export default class JobList extends Component {
+export default class SolutionList extends Component {
 
     constructor(props) {
         super(props);
@@ -17,7 +17,7 @@ export default class JobList extends Component {
             }
 
         }
-        this.getJobItems = this.getJobItems.bind(this);
+        this.getSolutionItems = this.getSolutionItems.bind(this);
         this.onPageChange = this.onPageChange.bind(this);
     }
 
@@ -25,7 +25,7 @@ export default class JobList extends Component {
         this.setState({ pagination: { ...this.state.pagination, currentPage: page } });
     }
 
-    getJobItems() {
+    getSolutionItems() {
         
         let count = 0;
         if (this.props.data) count=this.props.data.length;
@@ -38,7 +38,7 @@ export default class JobList extends Component {
 
                 children.push(
                     <Col span={6}>
-                        <JobItem data={this.props.data[i]} match={this.props.match} />
+                        <SolutionItem showSolutionDetailModal={this.props.showSolutionDetailModal} data={this.props.data[i]} match={this.props.match} />
 
                     </Col>
 
@@ -55,9 +55,9 @@ export default class JobList extends Component {
 
         return (
 
-            <div className="JobList">
+            <div className="SolutionList">
                 <Row gutter={20}>
-                    {this.getJobItems()}
+                    {this.getSolutionItems()}
                 </Row>
 
                     {this.props.data?

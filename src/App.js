@@ -14,6 +14,8 @@ import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
 //other components
 import DashboardContainer from './Components/Pages/ProblemOwner/Dashboard/DashboardContainer'
 import ProblemViewPage from './Components/Pages/ProblemViewPage/ProblemViewPage';
+
+
 //Redux component
 import { connect } from 'react-redux'
 
@@ -43,6 +45,7 @@ class App extends Component {
               <Route exact path='/' component={Mainpage} />
               <Route path='/dashboard' component={DashboardContainer} />
               <Route path='/problem/:problemid' component={ProblemViewPage}/>
+            
               <Redirect to="/404" />
             </Switch>
           </Layout.Content>

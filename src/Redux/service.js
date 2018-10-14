@@ -9,7 +9,8 @@ import {
     setUserInfoAfterLogin,
     set_result_problem_list,
     signout,
-    set_result_problem
+    set_result_problem,
+    set_result_solution_list
 } from './Actions/actions';
 
 
@@ -17,7 +18,7 @@ import {
 
 const Problem_Table = "Problems";
 const AccountData_Table = "AccountData";
-
+const Problem_Solution_Table = "ProblemSolution";
 
 export function loginGG() {
     return (dispatch) => {
@@ -42,29 +43,29 @@ export function checkLogged_and_Login_automatically() {
 }
 
 
-export function get_Problem(id){
-    return (dispatch)=>{
-        firestore.collection(Problem_Table).doc(id).get().then((doc)=>{
-            if (doc.exists){
-                    dispatch(set_result_problem(doc.data()));
+export function get_Problem(id) {
+    return (dispatch) => {
+        firestore.collection(Problem_Table).doc(id).get().then((doc) => {
+            if (doc.exists) {
+                dispatch(set_result_problem(doc.data()));
             }
         })
     }
 }
 
-export function get_All_Problem_List(){
-    return(dispatch)=>{
-        firestore.collection(Problem_Table).get().then((snapshot)=>{
-            let list =[];
-            snapshot.forEach((doc)=>{
-                console.log(doc.id, " => ", doc.data());
-                var item={...doc.data(),id:doc.id};
+export function get_All_Problem_List() {
+    return (dispatch) => {
+        firestore.collection(Problem_Table).get().then((snapshot) => {
+            let list = [];
+            snapshot.forEach((doc) => {
+
+                var item = { ...doc.data(), id: doc.id };
                 list.push(item);
             })
             dispatch(set_result_problem_list(list));
         });
-      
-        
+
+
     }
 }
 
@@ -75,14 +76,15 @@ export function get_All_Problem_List_from_this_account(accountUID) {
             let list = [];
             snapshot.forEach(function (doc) {
                 // doc.data() is never undefined for query doc snapshots
-                console.log(doc.id, " => ", doc.data());
-                
-                list.push(doc.data());
+
+                var item = doc.data();
+                item = { ...item, id: doc.id }
+                list.push(item);
 
             });
 
             dispatch(set_result_problem_list(list));
-            console.log("st" + list);
+
         })
     }
 }
@@ -102,16 +104,51 @@ export function add_new_problem(accountUID, problem) {
                 let list = [];
                 snapshot.forEach(function (doc) {
                     // doc.data() is never undefined for query doc snapshots
-                    console.log(doc.id, " => ", doc.data());
-                    list.push(doc.data());
+
+                    var item = doc.data();
+                    item = { ...item, id: doc.id }
+                    list.push(item);
 
                 });
 
                 dispatch(set_result_problem_list(list));
-                console.log("st" + list);
+
             })
         })
 
+    }
+}
+
+
+
+
+///////////////// SOLUTION ////////////////////
+
+
+export function submit_solution(accountUID, problemID, solution) {
+    return (dispatch) => {
+
+        firestore.collection(Problem_Solution_Table).doc(problemID).collection("Solutions").doc(accountUID).set({ solution });
+    }
+}
+
+export function get_solution_list(problemID) {
+    return (dispatch) => {
+        firestore.collection(Problem_Solution_Table).doc(problemID).collection("Solutions").get().then((querySnapshot) => {
+            // if co du lieu thi lay ve
+            let list = [];
+            querySnapshot.forEach(function (doc) {
+                // doc.data() is never undefined for query doc snapshots
+                var item = doc.data();
+                item = { ...item, id: doc.id }
+                list.push(item);
+
+            });
+ 
+            if (list.length>=1)
+            dispatch(set_result_solution_list(list))
+            else dispatch(set_result_solution_list(null))
+        })
     }
 }
 

@@ -5,7 +5,7 @@ var config = {
     authDomain: "projectlink-c4a56.firebaseapp.com",
     databaseURL: "https://projectlink-c4a56.firebaseio.com",
     projectId: "projectlink-c4a56",
-    storageBucket: "",
+    storageBucket: "gs://projectlink-c4a56.appspot.com",
     messagingSenderId: "164135122402"
   };
   var firebase_init=firebase.initializeApp(config);

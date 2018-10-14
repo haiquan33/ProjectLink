@@ -5,7 +5,7 @@ import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
 //Redux component
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
-import {get_Problem} from '../../../Redux/service';
+import {get_Problem,submit_solution} from '../../../Redux/service';
 
 //other component
 import ProblemDetail from './ProblemDetail';
@@ -15,13 +15,23 @@ class ProblemViewPage extends React.Component {
   constructor() {
     super();
     this.state = { someKey: 'someValue' };
+    this.handle_submit_solution=this.handle_submit_solution.bind(this);
+  }
+
+  handle_submit_solution(solutionContent){
+      //solution content có tên của thằng gửi
+
+     
+     var  solution={content:solutionContent,ownerName:this.props.userInfo.displayName,ownerUID: this.props.userInfo.uid};
+  
+      this.props.submit_solution(this.props.userInfo.uid,this.state.problemid,solution)
   }
 
   render() {
     return (<div>
                 {this.props.resultProblem?<ProblemDetail problem={this.props.resultProblem} />:null}
                 
-                <ProblemSolutionSubmit/>
+                <ProblemSolutionSubmit handle_submit_solution={this.handle_submit_solution} />
         </div>);
   }
 
@@ -45,7 +55,8 @@ function mapState2Props(state) {
   
   const mapDispatchToProps = dispatch => {
     return bindActionCreators({
-           get_Problem
+           get_Problem,
+           submit_solution
     }, dispatch)
   
   }

@@ -3,8 +3,11 @@ import React, { Component } from 'react';
 
 import web3 from './web3';
 import ipfs from './ipfs';
-import {storehash} from './storehash';
-import { Button, Table, Grid, Form } from 'react-bootstrap';
+import { storehash } from './storehash';
+import { Table, Grid, Form,Button as BsButton } from 'react-bootstrap';
+import { Button, Input } from 'antd'
+import './ContractSignPage.css'
+
 class ContractSignPage extends Component {
 
     state = {
@@ -50,9 +53,9 @@ class ContractSignPage extends Component {
     onSubmit = async (event) => {
         event.preventDefault();
         //bring in user's metamask account address
-       
+
         //obtain contract address from storehash.js
-       
+
         // this.setState({ ethAddress });
         //save document to IPFS,return its hash#, and set hash# to state
         //https://github.com/ipfs/interface-ipfs-core/blob/master/SPEC/FILES.md#add 
@@ -64,9 +67,9 @@ class ContractSignPage extends Component {
             //return the transaction hash from the ethereum contract
             //see, this https://web3js.readthedocs.io/en/1.0/web3-eth-contract.html#methods-mymethod-send
 
-           storehash.sendHash(this.state.ipfsHash);
-            let txReceipt=storehash.getHash();
-            this.setState({txReceipt});
+            storehash.sendHash(this.state.ipfsHash);
+            let txReceipt = storehash.getHash();
+            this.setState({ txReceipt });
             //.send({
             //     from: accounts[0]
             // }, (error, transactionHash) => {
@@ -76,33 +79,39 @@ class ContractSignPage extends Component {
         }) //await ipfs.add 
     }; //onSubmit
     render() {
-        
 
-        
-        
+
+
+
         return (
             <div className="App">
-                <header className="App-header">
-                    <h1> Ethereum and IPFS with Create React App</h1>
-                </header>
 
-                <hr />
+
+
                 <Grid>
-                    <h3> Choose file to send to IPFS </h3>
+                    <h3> Chọn file hợp đồng để gửi lên IPFS </h3>
                     <Form onSubmit={this.onSubmit}>
                         <input
                             type="file"
                             onChange={this.captureFile}
                         />
-                        <Button
+                        <BsButton
+                            className="btnSubmit"
                             bsStyle="primary"
                             type="submit">
                             Send it
-             </Button>
+                        </BsButton>
                     </Form>
+                    <div className="PassandSubmit">
+                        <div className="PasswordContainer">
+                            <Input addonBefore="Mật khẩu bên A" defaultValue="mật khẩu" />
+                            <Input addonBefore="Mật khẩu bên B" defaultValue="mật khẩu" />
+                        </div>
+
+                    </div>
                     <hr />
                     <Button onClick={this.onClick}> Get Transaction Receipt </Button>
-                    <Table bordered responsive>
+                    <Table className="DetailTable" bordered responsive >
                         <thead>
                             <tr>
                                 <th>Tx Receipt Category</th>

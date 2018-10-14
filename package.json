@@ -13,15 +13,18 @@
     "react-bootstrap": "^0.32.1",
     "react-collapse": "^4.0.3",
     "react-dom": "^16.3.2",
+    "react-firebase-file-uploader": "^2.4.2",
     "react-motion": "^0.5.2",
     "react-redux": "^5.0.7",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.9",
     "react-scripts": "1.1.1",
+    "react-signature-canvas": "^1.0.0-alpha.1",
     "redux": "^4.0.0",
     "redux-thunk": "^2.2.0",
     "shortid": "^2.2.8",
+    "signature_pad": "^3.0.0-beta.3",
     "web3": "^0.20.1"
   },
   "scripts": {

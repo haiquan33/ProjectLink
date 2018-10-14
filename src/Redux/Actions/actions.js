@@ -25,7 +25,9 @@ export const SET_USER_INFO_AFTER_LOGIN="SET_USER_INFO_AFTER_LOGIN";
 export const SET_RESULT_PROBLEM_LIST="SET_RESULT_PROBLEM_LIST";
 export const SET_RESULT_PROBLEM="SET_RESULT_PROBLEM";
 
+//////////////////////////////////////
 
+export const SET_RESULT_SOLUTION_LIST="SET_RESULT_SOLUTION_LIST";
 
 
 
@@ -161,5 +163,16 @@ export function set_result_problem(problem){
     return {
         type: SET_RESULT_PROBLEM,
         resultProblem:problem
+    }
+}
+
+
+
+//Solutio action
+
+export function set_result_solution_list(solution){
+    return{
+            type: SET_RESULT_SOLUTION_LIST,
+            resultSolutionList:solution
     }
 }

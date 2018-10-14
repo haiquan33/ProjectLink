@@ -30,9 +30,11 @@ class ProblemListContainer extends Component {
     }
     componentDidMount() {
         //nếu user yêu cầu list tất cả các công viêc đã đăng thì thực hiện lấy các công việc
+        
         if (this.props.match.params.postedType == 'all') {
+            
                 this.props.get_All_Problem_List_from_this_account(this.props.userInfo.uid);
-                console.log("get problem list");
+               
         }
     }
 
@@ -55,7 +57,7 @@ class ProblemListContainer extends Component {
 
         return (
             <div>
-                <JobList data={this.props.resultProblemList} />        
+                <JobList data={this.props.resultProblemList} match={this.props.match} />        
                 <Button onClick={this.openCreateProblemModal} type="primary" shape="circle" icon="plus" size={"large"} />
                 <Modal
                     visible={this.state.showCreateProblemModal}

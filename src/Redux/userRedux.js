@@ -20,7 +20,8 @@ import {LOGIN_GG_SUCCESS,
     
     SIGNOUT,
     SET_RESULT_PROBLEM_LIST,
-    SET_RESULT_PROBLEM} from './Actions/actions' ;
+    SET_RESULT_PROBLEM,
+    SET_RESULT_SOLUTION_LIST} from './Actions/actions' ;
 
 
 
@@ -46,6 +47,9 @@ export const DefaultProblemState = {
    
 }
 
+export const DefaultSolutionState={
+    resultSolutionList:null
+}
 
 export const accountReducer = (state = DefaultAccountState , action) => {
     let count_temp=0;
@@ -65,10 +69,17 @@ export const problemReducer = (state = DefaultProblemState,action)=>{
     }
 }
 
+export const solutionReducer=(state=DefaultSolutionState,action)=>{
+    switch(action.type){
+        case SET_RESULT_SOLUTION_LIST:return{...state,resultSolutionList:action.resultSolutionList}
+        default:return state;   
+    }
+}
 
 export const rootReducer = combineReducers({
     accountReducer,
     problemReducer,
+    solutionReducer,
     router: routerReducer
 })
 
