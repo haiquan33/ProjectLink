@@ -31,6 +31,10 @@ export const SET_RESULT_SOLUTION_LIST="SET_RESULT_SOLUTION_LIST";
 
 
 
+/////////////////////////////////////
+export const SET_RESULT_CONTRACT_LIST="SET_RESULT_CONTRACT_LIST";
+
+
 
 ////////////// LOGIN SIGNUP action //////////////////////
 
@@ -168,11 +172,21 @@ export function set_result_problem(problem){
 
 
 
-//Solutio action
+//Solution action
 
 export function set_result_solution_list(solution){
     return{
             type: SET_RESULT_SOLUTION_LIST,
             resultSolutionList:solution
+    }
+}
+
+
+
+//Contract action
+export function set_result_contract_list(contract){
+    return{
+        type:SET_RESULT_CONTRACT_LIST,
+        resultContractList:contract
     }
 }

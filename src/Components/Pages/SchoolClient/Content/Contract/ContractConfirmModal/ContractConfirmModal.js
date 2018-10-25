@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
-import { Upload, Button } from 'antd'
+import { Button } from 'antd'
 import SignatureCanvas from 'react-signature-canvas';
-import firebase_init from '../../../../../../../firebase'
-import FileUploader from "react-firebase-file-uploader";
+
 import { DatePicker, Alert } from 'antd';
 
-import './ContractSubmitModal.css'
+import './ContractConfirmModal.css'
 import { __makeTemplateObject } from 'tslib';
 
-class ContractSubmitModal extends Component {
+class ContractConfirmModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,15 +29,15 @@ class ContractSubmitModal extends Component {
     this.setState({ isUploading: false });
     console.error(error);
   };
-  handleUploadSuccess = filename => {
-    this.setState({ ContractFilename: filename, url: filename, progress: 100, isUploading: false });
-    firebase_init
-      .storage()
-      .ref("contracts")
-      .child(filename)
-      .getDownloadURL()
-      .then(url => this.setState({ fileurl: url }));
-  };
+  // handleUploadSuccess = filename => {
+  //   this.setState({ ContractFilename: filename, url: filename, progress: 100, isUploading: false });
+  //   firebase_init
+  //     .storage()
+  //     .ref("contracts")
+  //     .child(filename)
+  //     .getDownloadURL()
+  //     .then(url => this.setState({ fileurl: url }));
+  // };
 
 
 
@@ -78,7 +77,13 @@ class ContractSubmitModal extends Component {
     }
   }
 
+  componentDidMount(){
+    let ProblemOwnerSignature=JSON.parse(this.props.data.ProblemOwnerSign);
+    this.problemOwnerSignCanvas.fromData(ProblemOwnerSignature)
+  }
+
   render() {
+   
     return (
       <div className="ContractSubmitModal">
         {this.state.alert ? <Alert
@@ -96,24 +101,25 @@ class ContractSubmitModal extends Component {
         <div>Hạn thanh toán đợt 3</div>
         <DatePicker onChange={this.set_deadline3} />
         <div>File hợp đồng</div>
-        <FileUploader
-          accept="image/*"
-          name="avatar"
-          randomizeFilename
-          storageRef={firebase_init.storage().ref("contracts")}
-          onUploadStart={this.handleUploadStart}
-          onUploadError={this.handleUploadError}
-          onUploadSuccess={this.handleUploadSuccess}
-          onProgress={this.handleProgress}
-        />
+     
         <div>Chữ kí bên thuê</div>
         <div style={{ border: '1px solid black' }}>
           <SignatureCanvas penColor='green'
+            ref={(ref) => { this.problemOwnerSignCanvas = ref }}
+            canvasProps={{ width: 500, height: 200, className: 'sigCanvas', }}
+            />
+
+        </div>
+        <div>Chữ kí bên thực hiện</div>
+        <div style={{ border: '1px solid black' }}>
+          <SignatureCanvas penColor='green'
             ref={(ref) => { this.sigCanvas = ref }}
-            canvasProps={{ width: 500, height: 200, className: 'sigCanvas', }} />
+            canvasProps={{ width: 500, height: 200, className: 'sigCanvas', }}
+            />
+            
         </div>
         <div className="ContractModalFooter">
-          <Button type="default" onClick={this.props.closeContractSubmitModal}>Close</Button>
+          <Button type="default" onClick={this.props.closeContractConfirmModal}>Close</Button>
           <Button type="primary" onClick={this.submit}>Gửi</Button>
         </div>
       </div>
@@ -121,4 +127,4 @@ class ContractSubmitModal extends Component {
   }
 }
 
-export default ContractSubmitModal;
+export default ContractConfirmModal;

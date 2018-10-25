@@ -1,0 +1,41 @@
+:root {
+    --primary-color: #707070;
+
+  }
+
+.SideMenuLogoContainer{
+    margin-top:20px;
+    margin-bottom:30px;
+  
+}
+
+.SideMenuLogo{
+    width: 60px;
+    height: auto;
+}
+.SideMenuLogoContainer>span{
+    font-family: "UTM-Alter-Gothic";
+    color: white;
+    font-size: 40px;
+    margin:10px;
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none; 
+}
+
+
+/*Sider*/
+.ant-layout.ant-layout-has-sider>.ant-layout-sider{
+    background: var(--primary-color);
+}
+/*Header*/
+.ant-layout.ant-layout-has-sider>.ant-layout>.ant-layout-header{
+    padding: 0px;
+}
+
+/*Header*/
+.ant-layout.ant-layout-has-sider>.ant-layout>.ant-layout-header{
+    background: white;
+    height: 80px;
+}

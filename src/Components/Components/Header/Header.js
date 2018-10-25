@@ -65,7 +65,7 @@ class Header extends Component {
                     {
                         this.props.userInfo?
                         //check whether render menu for school client or problem owner
-                        email.includes("edu.vn")?<SchoolClientMenu className="AvatarMenu" NavigateTo={this.NavigateTo} userInfo={this.props.userInfo} SignOutGG={this.props.SignOutGG} /> :<ProblemOwnerMenu className="AvatarMenu" NavigateTo={this.NavigateTo} userInfo={this.props.userInfo} SignOutGG={this.props.SignOutGG}/>
+                        email.includes("edu.vn")||email.includes("apcs.vn")?<SchoolClientMenu className="AvatarMenu" NavigateTo={this.NavigateTo} userInfo={this.props.userInfo} SignOutGG={this.props.SignOutGG} /> :<ProblemOwnerMenu className="AvatarMenu" NavigateTo={this.NavigateTo} userInfo={this.props.userInfo} SignOutGG={this.props.SignOutGG}/>
                         :
                         <Button onClick={this.login} >SIGN IN</Button>
                     }

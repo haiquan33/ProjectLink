@@ -69,10 +69,8 @@ class ContractSubmitModal extends Component {
       deadline_2: this.state.deadline_2,
       deadline_3: this.state.deadline_3,
     }
-    if (this.state.fileurl) {
+    if (this.state.fileurl)
       this.props.submit_contract(temp_data);
-      this.props.closeContractSubmitModal();
-    }
     else {
       this.setState({ alertError: "Chưa upload file hợp đồng", alert: true })
     }
@@ -84,7 +82,7 @@ class ContractSubmitModal extends Component {
         {this.state.alert ? <Alert
           message={this.state.alertError}
           type="error"
-
+        
 
         />
           : null}

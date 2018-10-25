@@ -10,7 +10,8 @@ import {
     set_result_problem_list,
     signout,
     set_result_problem,
-    set_result_solution_list
+    set_result_solution_list,
+    set_result_contract_list
 } from './Actions/actions';
 
 
@@ -19,7 +20,7 @@ import {
 const Problem_Table = "Problems";
 const AccountData_Table = "AccountData";
 const Problem_Solution_Table = "ProblemSolution";
-const Problem_Contract_Table="ProblemContract";
+const Problem_Contract_Table = "ProblemContract";
 export function loginGG() {
     return (dispatch) => {
         auth.signInWithPopup(Authprovider)
@@ -144,9 +145,9 @@ export function get_solution_list(problemID) {
                 list.push(item);
 
             });
- 
-            if (list.length>=1)
-            dispatch(set_result_solution_list(list))
+
+            if (list.length >= 1)
+                dispatch(set_result_solution_list(list))
             else dispatch(set_result_solution_list(null))
         })
     }
@@ -158,19 +159,40 @@ export function submit_contract(data) {
     return (dispatch) => {
 
         firestore.collection(Problem_Contract_Table).doc(data.problemID).set({
-            ContractFilename:data.ContractFilename,
-            ProblemOwnerID:data.ProblemOwnerID,
-            ProblemOwnerSign:data.ProblemOwnerSign,
-           
-            SolutionOwnerID:data.SolutionOwnerID,
-            SolutionOwnerSign:null,
-    
-            deadline_1:data.deadline_1,
-            deadline_2:data.deadline_2,
-            deadline_3:data.deadline_3,
+            ContractFilename: data.ContractFilename,
+            ProblemOwnerID: data.ProblemOwnerID,
+            ProblemOwnerSign: data.ProblemOwnerSign,
+
+            SolutionOwnerID: data.SolutionOwnerID,
+            SolutionOwnerSign: null,
+
+            deadline_1: data.deadline_1,
+            deadline_2: data.deadline_2,
+            deadline_3: data.deadline_3,
 
 
 
+        })
+    }
+}
+
+
+export function get_contract_list_of_solution_owner(userID) {
+    return (dispatch) => {
+        firestore.collection(Problem_Contract_Table).where("SolutionOwnerID","==",userID).get().then((querySnapshot) => {
+            // if co du lieu thi lay ve
+            let list = [];
+            querySnapshot.forEach(function (doc) {
+                // doc.data() is never undefined for query doc snapshots
+                var item = doc.data();
+                item = { ...item, id: doc.id }
+                list.push(item);
+
+            });
+
+            if (list.length >= 1)
+                dispatch(set_result_contract_list(list))
+            else dispatch(set_result_contract_list(null))
         })
     }
 }

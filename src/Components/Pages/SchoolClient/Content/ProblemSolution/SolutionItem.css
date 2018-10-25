@@ -1,0 +1,11 @@
+
+.ant-card.ant-card-hoverable{
+    margin: 10px;
+     
+}
+
+.ant-card.ant-card-hoverable>.ant-card-actions>li>span>.anticon.anticon-to-top.to-top-button{
+    background: var(--primary-color);
+    color: white;
+    border-radius: 2px;
+}
