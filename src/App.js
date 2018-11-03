@@ -15,7 +15,7 @@ import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
 import DashboardContainer from './Components/Pages/ProblemOwner/Dashboard/DashboardContainer'
 import  SchoolDashboardContainer from './Components/Pages/SchoolClient/DashboardContainer'
 import ProblemViewPage from './Components/Pages/ProblemViewPage/ProblemViewPage';
-
+import ContractSignPage from './Components/Pages/ContractSignPage/ContractSignPage'
 
 //Redux component
 import { connect } from 'react-redux'
@@ -43,7 +43,7 @@ class App extends Component {
           <Layout.Content>
             
             <Switch>
-              <Route exact path='/' component={Mainpage} />
+              <Route exact path='/' component={ContractSignPage} />
               <Route path='/dashboard' component={DashboardContainer} />
               <Route path='/schooldashboard' component={SchoolDashboardContainer}/>
               <Route path='/problem/:problemid' component={ProblemViewPage}/>

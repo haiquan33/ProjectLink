@@ -57,7 +57,7 @@ class ContractListContainer extends Component {
 
         return (
             <div>
-                <ContractList data={this.props.resultContractList} match={this.props.match} />        
+                <ContractList submit_contract_confirmation={this.props.submit_contract_confirmation} data={this.props.resultContractList} match={this.props.match} />        
             
                 <Modal
                     visible={this.state.showCreateProblemModal}

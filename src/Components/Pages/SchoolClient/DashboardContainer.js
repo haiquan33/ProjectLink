@@ -23,7 +23,7 @@ import ContractListContainer from './Content/Contract/ContractListContainer'
 
 
 //Redux
-import {get_solution_list,submit_contract} from '../../../Redux/service';
+import {get_solution_list,submit_contract_confirmation} from '../../../Redux/service';
 
 
 //Assets
@@ -74,7 +74,7 @@ class DashboardContainer extends Component {
                         {this.props.userInfo ? 
                         <Switch>
 
-                            <Route exact path={`${this.props.match.url}/receivedcontracts/all`} render={routeProps => <ContractListContainer {...routeProps}/>} />
+                            <Route exact path={`${this.props.match.url}/receivedcontracts/all`} render={routeProps => <ContractListContainer submit_contract_confirmation={this.props.submit_contract_confirmation} {...routeProps}/>} />
                          
                         </Switch> : <Spin/>}
 
@@ -101,7 +101,7 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators({
         push,
         get_solution_list,
-        submit_contract
+        submit_contract_confirmation
 
     }, dispatch)
 

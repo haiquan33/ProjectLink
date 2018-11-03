@@ -54,7 +54,7 @@ export default class ContractItem extends Component {
                     title="Gừi hợp đồng"
                     footer={null}
                 >
-                    <ContractConfirmModal data={this.props.data} closeContractConfirmModal={this.closeContractConfirmModal}/>
+                    <ContractConfirmModal submit_contract_confirmation={this.props.submit_contract_confirmation} data={this.props.data} closeContractConfirmModal={this.closeContractConfirmModal}/>
                 </Modal>
                 <Card hoverable
                     title={<span onClick={this.openProblemLink} >{this.props.data.problemName}</span>}

@@ -38,7 +38,7 @@ export default class ContractList extends Component {
 
                 children.push(
                     <Col span={6}>
-                        <ContractItem data={this.props.data[i]} match={this.props.match} />
+                        <ContractItem submit_contract_confirmation={this.props.submit_contract_confirmation} data={this.props.data[i]} match={this.props.match} />
 
                     </Col>
 

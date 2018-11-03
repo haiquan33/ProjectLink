@@ -169,12 +169,28 @@ export function submit_contract(data) {
             deadline_1: data.deadline_1,
             deadline_2: data.deadline_2,
             deadline_3: data.deadline_3,
-
+            status:"pending"
 
 
         })
     }
 }
+// school client submit signature
+export function submit_contract_confirmation(data) {
+    return (dispatch) => {
+
+        firestore.collection(Problem_Contract_Table).doc(data.problemID).update({
+           
+            SolutionOwnerSign: data.SolutionOwnerSign,
+            status:"accepted"
+  
+
+
+        })
+    }
+}
+
+
 
 
 export function get_contract_list_of_solution_owner(userID) {

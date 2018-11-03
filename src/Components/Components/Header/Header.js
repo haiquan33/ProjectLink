@@ -41,6 +41,8 @@ class Header extends Component {
   login() {
   
     this.props.loginGG();
+    //back to home page
+    //this.props.push('/');
   }
   componentDidMount() {
     this.props.checkLogged_and_Login_automatically();

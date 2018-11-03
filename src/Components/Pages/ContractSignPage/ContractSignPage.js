@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import web3 from './web3';
 import ipfs from './ipfs';
 import { storehash } from './storehash';
-import { Table, Grid, Form,Button as BsButton } from 'react-bootstrap';
+import { Table, Grid, Form, Button as BsButton } from 'react-bootstrap';
 import { Button, Input } from 'antd'
 import './ContractSignPage.css'
 
@@ -62,14 +62,16 @@ class ContractSignPage extends Component {
         await ipfs.add(this.state.buffer, (err, ipfsHash) => {
             console.log(err, ipfsHash);
             //setState by setting ipfsHash to ipfsHash[0].hash 
-            this.setState({ ipfsHash: ipfsHash[0].hash });
-            // call Ethereum contract method "sendHash" and .send IPFS hash to etheruem contract 
-            //return the transaction hash from the ethereum contract
-            //see, this https://web3js.readthedocs.io/en/1.0/web3-eth-contract.html#methods-mymethod-send
-
-            storehash.sendHash(this.state.ipfsHash);
-            let txReceipt = storehash.getHash();
-            this.setState({ txReceipt });
+      
+                this.setState({ ipfsHash: ipfsHash[0].hash });
+                // call Ethereum contract method "sendHash" and .send IPFS hash to etheruem contract 
+                //return the transaction hash from the ethereum contract
+                //see, this https://web3js.readthedocs.io/en/1.0/web3-eth-contract.html#methods-mymethod-send
+                console.log(ipfsHash[0].hash );
+                storehash.sendHash(ipfsHash[0].hash );
+                let txReceipt = storehash.getHash();
+                this.setState({ txReceipt });
+            
             //.send({
             //     from: accounts[0]
             // }, (error, transactionHash) => {

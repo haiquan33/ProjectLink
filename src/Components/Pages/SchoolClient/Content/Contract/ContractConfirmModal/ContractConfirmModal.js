@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import moment from 'moment';
+
 import { Button } from 'antd'
 import SignatureCanvas from 'react-signature-canvas';
 
@@ -54,27 +56,17 @@ class ContractConfirmModal extends Component {
 
 
   submit() {
-    let ProblemOwnerSign = this.sigCanvas.toData();
+    let solutionOwnerSign = this.solutionOwnerSignCanvas.toData();
     let temp_data = {
-      problemID: this.props.problemID,
-      ContractFilename: this.state.ContractFilename,
-      ProblemOwnerID: this.props.ProblemOwnerID,
-      ProblemOwnerSign: JSON.stringify(ProblemOwnerSign),
+      problemID:this.props.data.id, 
+      SolutionOwnerSign: JSON.stringify(solutionOwnerSign)
 
-      SolutionOwnerID: this.props.SolutionOwnerID,
-      SolutionOwnerSign: null,
-
-      deadline_1: this.state.deadline_1,
-      deadline_2: this.state.deadline_2,
-      deadline_3: this.state.deadline_3,
     }
-    if (this.state.fileurl) {
-      this.props.submit_contract(temp_data);
-      this.props.closeContractSubmitModal();
-    }
-    else {
-      this.setState({ alertError: "Chưa upload file hợp đồng", alert: true })
-    }
+  
+    this.props.submit_contract_confirmation(temp_data);
+    this.props.closeContractConfirmModal();
+    
+   
   }
 
   componentDidMount(){
@@ -95,11 +87,11 @@ class ContractConfirmModal extends Component {
           : null}
 
         <div>Hạn thanh toán đợt 1</div>
-        <DatePicker onChange={this.set_deadline1} />
+        <DatePicker defaultValue={moment(this.props.data.deadline_1, 'DD-MM-YYYY')} onChange={this.set_deadline1} />
         <div>Hạn thanh toán đợt 2</div>
-        <DatePicker onChange={this.set_deadline2} />
+        <DatePicker defaultValue={moment(this.props.data.deadline_2, 'DD-MM-YYYY')} onChange={this.set_deadline2} />
         <div>Hạn thanh toán đợt 3</div>
-        <DatePicker onChange={this.set_deadline3} />
+        <DatePicker defaultValue={moment(this.props.data.deadline_3, 'DD-MM-YYYY')} onChange={this.set_deadline3} />
         <div>File hợp đồng</div>
      
         <div>Chữ kí bên thuê</div>
@@ -113,7 +105,7 @@ class ContractConfirmModal extends Component {
         <div>Chữ kí bên thực hiện</div>
         <div style={{ border: '1px solid black' }}>
           <SignatureCanvas penColor='green'
-            ref={(ref) => { this.sigCanvas = ref }}
+            ref={(ref) => { this.solutionOwnerSignCanvas = ref }}
             canvasProps={{ width: 500, height: 200, className: 'sigCanvas', }}
             />
             
