@@ -43,7 +43,7 @@ class App extends Component {
           <Layout.Content>
             
             <Switch>
-              <Route exact path='/' component={ContractSignPage} />
+              <Route exact path='/' component={Mainpage} />
               <Route path='/dashboard' component={DashboardContainer} />
               <Route path='/schooldashboard' component={SchoolDashboardContainer}/>
               <Route path='/problem/:problemid' component={ProblemViewPage}/>
