@@ -4,9 +4,14 @@ import SignatureCanvas from 'react-signature-canvas';
 import firebase_init from '../../../../../../../firebase'
 import FileUploader from "react-firebase-file-uploader";
 import { DatePicker, Alert } from 'antd';
+import NumericInputDemo from '../../../../../../Components/Common/NumericInput'
 
 import './ContractSubmitModal.css'
 import { __makeTemplateObject } from 'tslib';
+
+import { tokenAPI } from '../../../../../../../BlockChainAPI/tokenAPI'
+import { tempConst } from '../../../../../../../TempConst';
+
 
 class ContractSubmitModal extends Component {
   constructor(props) {
@@ -19,6 +24,7 @@ class ContractSubmitModal extends Component {
     this.set_deadline1 = this.set_deadline1.bind(this);
     this.set_deadline2 = this.set_deadline2.bind(this);
     this.set_deadline3 = this.set_deadline3.bind(this);
+
   }
 
 
@@ -50,6 +56,7 @@ class ContractSubmitModal extends Component {
   }
   set_deadline3(date, dateString) {
     this.setState({ deadline_3: dateString })
+
   }
 
 
@@ -69,6 +76,12 @@ class ContractSubmitModal extends Component {
       deadline_2: this.state.deadline_2,
       deadline_3: this.state.deadline_3,
     }
+    let balance = parseInt(tokenAPI.balanceOf(tempConst.bossAddress));
+    if (balance < 1000000) {
+      this.setState({ alertError: "Không đủ số dư thực hiện!  Số dư hiện tại: " + balance, alert: true });
+      return;
+    }
+
     if (this.state.fileurl) {
       this.props.submit_contract(temp_data);
       this.props.closeContractSubmitModal();
@@ -90,11 +103,14 @@ class ContractSubmitModal extends Component {
           : null}
 
         <div>Hạn thanh toán đợt 1</div>
-        <DatePicker onChange={this.set_deadline1} />
+             <DatePicker onChange={this.set_deadline1} />
+            <NumericInputDemo placeholder="Nhập số tiền thanh toán đợt này" />
         <div>Hạn thanh toán đợt 2</div>
-        <DatePicker onChange={this.set_deadline2} />
+            <DatePicker onChange={this.set_deadline2} />
+            <NumericInputDemo placeholder="Nhập số tiền thanh toán đợt này" />
         <div>Hạn thanh toán đợt 3</div>
-        <DatePicker onChange={this.set_deadline3} />
+           <DatePicker onChange={this.set_deadline3} />
+           <NumericInputDemo placeholder="Nhập số tiền thanh toán đợt này" />
         <div>File hợp đồng</div>
         <FileUploader
           accept="image/*"

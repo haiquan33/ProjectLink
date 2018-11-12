@@ -3,7 +3,7 @@ pragma solidity ^0.4.24;
 // ----------------------------------------------------------------------------
 // 'PLToken' token contract
 //
-// Deployed to : 0xd3b058886523e2dc31962eadb6e5e62dfd164b82
+// Deployed to : 0x795f9412CF44B40ab5Efa151c2c124C869c0aaCe
 // Symbol      : PLTOK
 // Name        : ProjectLink Token
 // Total supply: 100000000
@@ -49,7 +49,9 @@ contract ERC20Interface {
     function transfer(address to, uint tokens) public returns (bool success);
     function approve(address spender, uint tokens) public returns (bool success);
     function transferFrom(address from, address to, uint tokens) public returns (bool success);
-
+    
+    function lockBalance(address tokenOwner,uint tokens) public returns(bool success);
+    function getLockedBalance(address tokenOwner) public constant returns(uint tokens);
     event Transfer(address indexed from, address indexed to, uint tokens);
     event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
 }
@@ -107,7 +109,7 @@ contract ProjectLinkToken is ERC20Interface, Owned, SafeMath {
 
     mapping(address => uint) balances;
     mapping(address => mapping(address => uint)) allowed;
-
+    mapping(address=> uint) lockedBalance;
 
     // ------------------------------------------------------------------------
     // Constructor
@@ -117,8 +119,8 @@ contract ProjectLinkToken is ERC20Interface, Owned, SafeMath {
         name = "ProjectLink Token";
         decimals = 18;
         _totalSupply = 100000000000000000000000000;
-        balances[0xd3b058886523e2dc31962eadb6e5e62dfd164b82] = _totalSupply;
-        emit Transfer(address(0),0xd3b058886523e2dc31962eadb6e5e62dfd164b82, _totalSupply);
+        balances[0x8c5bc189fedd9dedbcd012cc326798cade63bc18] = _totalSupply;
+        emit Transfer(address(0),0x8c5bc189fedd9dedbcd012cc326798cade63bc18, _totalSupply);
     }
 
 
@@ -136,8 +138,17 @@ contract ProjectLinkToken is ERC20Interface, Owned, SafeMath {
     function balanceOf(address tokenOwner) public constant returns (uint balance) {
         return balances[tokenOwner];
     }
-
-
+    //lock an amount of token from this address to make sure this tokenOwner cant use amount of tokens
+    function lockBalance(address tokenOwner,uint tokens) public returns(bool success){
+        balances[tokenOwner]=safeSub(balances[tokenOwner],tokens);
+        lockedBalance[tokenOwner]=safeAdd(lockedBalance[tokenOwner],tokens);
+        return true;
+    }
+    
+    function getLockedBalance(address tokenOwner) public constant returns(uint tokens){
+        return lockedBalance[tokenOwner];
+    }
+    
     // ------------------------------------------------------------------------
     // Transfer the balance from token owner's account to to account
     // - Owner's account must have sufficient balance to transfer

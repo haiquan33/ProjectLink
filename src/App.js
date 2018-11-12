@@ -15,7 +15,7 @@ import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
 import DashboardContainer from './Components/Pages/ProblemOwner/Dashboard/DashboardContainer'
 import  SchoolDashboardContainer from './Components/Pages/SchoolClient/DashboardContainer'
 import ProblemViewPage from './Components/Pages/ProblemViewPage/ProblemViewPage';
-import ContractSignPage from './Components/Pages/ContractSignPage/ContractSignPage'
+//import ContractSignPage from './Components/Pages/ContractSignPage/ContractSignPage'
 
 //Redux component
 import { connect } from 'react-redux'
