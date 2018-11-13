@@ -38,7 +38,7 @@ export default class SolutionList extends Component {
 
                 children.push(
                     <Col span={6}>
-                        <SolutionItem ProblemOwnerID={this.props.ProblemOwnerID} problemID={this.props.match.params.problemID} submit_contract={this.props.submit_contract} showSolutionDetailModal={this.props.showSolutionDetailModal} data={this.props.data[i]} match={this.props.match} />
+                        <SolutionItem userInfo={this.props.userInfo} ProblemOwnerID={this.props.ProblemOwnerID} problemID={this.props.match.params.problemID} submit_contract={this.props.submit_contract} showSolutionDetailModal={this.props.showSolutionDetailModal} data={this.props.data[i]} match={this.props.match} />
 
                     </Col>
 

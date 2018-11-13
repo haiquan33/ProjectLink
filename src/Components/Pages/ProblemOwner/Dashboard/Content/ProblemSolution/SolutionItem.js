@@ -61,7 +61,7 @@ export default class SolutionItem extends Component {
                     title="Gừi hợp đồng"
                     footer={null}
                     >
-                        <ContracSubmitModal SolutionOwnerID={this.props.data.id} ProblemOwnerID={this.props.ProblemOwnerID} problemID={this.props.problemID} submit_contract={this.props.submit_contract} closeContractSubmitModal={this.closeContractSubmitModal}/>
+                        <ContracSubmitModal userInfo={this.props.userInfo} SolutionOwnerID={this.props.data.id} ProblemOwnerID={this.props.ProblemOwnerID} problemID={this.props.problemID} submit_contract={this.props.submit_contract} closeContractSubmitModal={this.closeContractSubmitModal}/>
                     </Modal>
                 <Card hoverable
                     title={<span onClick={this.showSolutionDetailModal} >{this.props.data.solution.ownerName}</span>}

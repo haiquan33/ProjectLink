@@ -38,7 +38,7 @@ export default class JobList extends Component {
 
                 children.push(
                     <Col span={6}>
-                        <JobItem data={this.props.data[i]} match={this.props.match} />
+                        <JobItem  userInfo={this.props.userInfo} data={this.props.data[i]} match={this.props.match} />
 
                     </Col>
 

@@ -25,6 +25,7 @@ class Mainpage extends Component {
 
   componentDidMount(){
     this.props.get_All_Problem_List();
+    
   }
 
   render() {

@@ -19,11 +19,11 @@ import SideMenu from './SideMenu/SideMenu';
 import MyHeader from './Header/MyHeader';
 
 import ContractListContainer from './Content/Contract/ContractListContainer'
-
+import SchoolInfoPage from './Content/SchoolInfoPage/SchoolInfoPage'
 
 
 //Redux
-import {get_solution_list,submit_contract_confirmation} from '../../../Redux/service';
+import {get_solution_list,submit_contract_confirmation,addWalletAddress,getUserWalletAdress} from '../../../Redux/service';
 
 
 //Assets
@@ -75,7 +75,8 @@ class DashboardContainer extends Component {
                         <Switch>
 
                             <Route exact path={`${this.props.match.url}/receivedcontracts/all`} render={routeProps => <ContractListContainer submit_contract_confirmation={this.props.submit_contract_confirmation} {...routeProps}/>} />
-                         
+                            <Route exact path={`${this.props.match.url}/cv`} render={routeProps => <SchoolInfoPage addWalletAddress={this.props.addWalletAddress} userInfo={this.props.userInfo} {...routeProps}/>} />
+                            
                         </Switch> : <Spin/>}
 
                     </Content>
@@ -101,7 +102,9 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators({
         push,
         get_solution_list,
-        submit_contract_confirmation
+        submit_contract_confirmation,
+        addWalletAddress,
+        getUserWalletAdress
 
     }, dispatch)
 

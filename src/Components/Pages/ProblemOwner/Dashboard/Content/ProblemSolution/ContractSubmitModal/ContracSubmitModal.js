@@ -11,6 +11,7 @@ import { __makeTemplateObject } from 'tslib';
 
 import { tokenAPI } from '../../../../../../../BlockChainAPI/tokenAPI'
 import { tempConst } from '../../../../../../../TempConst';
+import { userInfo } from 'os';
 
 
 class ContractSubmitModal extends Component {
@@ -18,12 +19,20 @@ class ContractSubmitModal extends Component {
     super(props);
     this.state = {
       alertError: "",
-      alert: false
+      alert: false,
+      firstPaidToken:null,
+      secondPaidToken:null,
+      thirdPaidToken:null,
     };
     this.submit = this.submit.bind(this);
     this.set_deadline1 = this.set_deadline1.bind(this);
     this.set_deadline2 = this.set_deadline2.bind(this);
     this.set_deadline3 = this.set_deadline3.bind(this);
+
+    this.onFirstPaidTokenChange=this.onFirstPaidTokenChange.bind(this);
+    this.onSecondPaidTokenChange=this.onSecondPaidTokenChange.bind(this);
+    this.onThirdPaidTokenChange=this.onThirdPaidTokenChange.bind(this);
+
 
   }
 
@@ -59,6 +68,15 @@ class ContractSubmitModal extends Component {
 
   }
 
+  onFirstPaidTokenChange=(value) => {
+    this.setState({ firstPaidToken: value });
+  }
+  onSecondPaidTokenChange=(value) => {
+    this.setState({ secondPaidToken: value });
+  }
+  onThirdPaidTokenChange=(value) => {
+    this.setState({ thirdPaidToken: value });
+  }
 
 
   submit() {
@@ -75,9 +93,13 @@ class ContractSubmitModal extends Component {
       deadline_1: this.state.deadline_1,
       deadline_2: this.state.deadline_2,
       deadline_3: this.state.deadline_3,
+      
     }
-    let balance = parseInt(tokenAPI.balanceOf(tempConst.bossAddress));
-    if (balance < 1000000) {
+    console.log(this.props.userInfo.walletAddress)
+    let balance = parseInt(tokenAPI.balanceOf(this.props.userInfo.walletAddress));
+    console.log("balance ",balance,"first paid ",this.state.firstPaidToken)
+    if (balance < this.state.firstPaidToken) {
+    
       this.setState({ alertError: "Không đủ số dư thực hiện!  Số dư hiện tại: " + balance, alert: true });
       return;
     }
@@ -104,13 +126,13 @@ class ContractSubmitModal extends Component {
 
         <div>Hạn thanh toán đợt 1</div>
              <DatePicker onChange={this.set_deadline1} />
-            <NumericInputDemo placeholder="Nhập số tiền thanh toán đợt này" />
+            <NumericInputDemo  value={this.state.firstPaidToken} onChange={this.onFirstPaidTokenChange} placeholder="Nhập số tiền thanh toán đợt này" />
         <div>Hạn thanh toán đợt 2</div>
             <DatePicker onChange={this.set_deadline2} />
-            <NumericInputDemo placeholder="Nhập số tiền thanh toán đợt này" />
+            <NumericInputDemo value={this.state.secondPaidToken} onChange={this.onSecondPaidTokenChange}  placeholder="Nhập số tiền thanh toán đợt này" />
         <div>Hạn thanh toán đợt 3</div>
            <DatePicker onChange={this.set_deadline3} />
-           <NumericInputDemo placeholder="Nhập số tiền thanh toán đợt này" />
+           <NumericInputDemo value={this.state.thirdPaidToken} onChange={this.onThirdPaidTokenChange}  placeholder="Nhập số tiền thanh toán đợt này" />
         <div>File hợp đồng</div>
         <FileUploader
           accept="image/*"

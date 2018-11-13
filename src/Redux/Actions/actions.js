@@ -36,6 +36,11 @@ export const SET_RESULT_CONTRACT_LIST="SET_RESULT_CONTRACT_LIST";
 
 
 
+
+////////////////////
+export const SET_USER_WALLET_ADDRESS="SET_USER_WALLET_ADDRESS"
+
+
 ////////////// LOGIN SIGNUP action //////////////////////
 
 //LOGIN
@@ -170,6 +175,13 @@ export function set_result_problem(problem){
     }
 }
 
+
+export function set_user_wallet_address(address){
+    return {
+        type:SET_USER_WALLET_ADDRESS,
+        walletAdress:address
+    }
+}
 
 
 //Solution action

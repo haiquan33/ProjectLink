@@ -4,7 +4,7 @@ import './DashboardContainer.css'
 
 
 //Ant
-import { Layout, Icon,Spin } from 'antd';
+import { Layout, Icon, Spin } from 'antd';
 
 
 import { Route, Link, Switch } from 'react-router-dom'
@@ -19,11 +19,11 @@ import SideMenu from './SideMenu/SideMenu';
 import MyHeader from './Header/MyHeader';
 import ProblemListContainer from './Content/Job/ProblemListContainer';
 import ProblemSolutionContainer from './Content/ProblemSolution/ProblemSolutionContainer';
-
+import ClientInfoPage from './Content/ClientInfoPage/ClientInfoPage'
 
 
 //Redux
-import {get_solution_list,submit_contract} from '../../../../Redux/service';
+import { get_solution_list, submit_contract, addWalletAddress, getUserWalletAdress } from '../../../../Redux/service';
 
 
 //Assets
@@ -37,7 +37,7 @@ class DashboardContainer extends Component {
         super(props);
         this.navigateTo = this.navigateTo.bind(this);
         this.toggleSiderCollapsed = this.toggleSiderCollapsed.bind(this);
-        this.navigateToSolutionList=this.navigateToSolutionList.bind(this);
+        this.navigateToSolutionList = this.navigateToSolutionList.bind(this);
         this.state = { siderFold: false, siderCollapsed: false }
     }
 
@@ -45,17 +45,23 @@ class DashboardContainer extends Component {
         this.props.push('/' + path);
     }
 
-    navigateToSolutionList(problemID){
-       // console.log(this.props.match.url);
-        this.props.push('/'+this.props.match.url+"/"+problemID+"/solutions/")
+    navigateToSolutionList(problemID) {
+        // console.log(this.props.match.url);
+        this.props.push('/' + this.props.match.url + "/" + problemID + "/solutions/")
     }
 
     toggleSiderCollapsed() {
         this.setState({ siderCollapsed: !this.state.siderCollapsed });
     }
 
+    componentDidMount() {
+   
+    }
     render() {
         // console.log(this.props.match.path);
+
+
+
         return (
 
 
@@ -71,12 +77,14 @@ class DashboardContainer extends Component {
                 <Layout >
                     <Header ><MyHeader siderCollapsed={this.state.siderCollapsed} toggleSiderCollapsed={this.toggleSiderCollapsed} /></Header>
                     <Content>
-                        {this.props.userInfo ? 
-                        <Switch>
+                        {this.props.userInfo ?
+                            <Switch>
 
-                            <Route exact path={`${this.props.match.url}/postedjobs/:postedType`} render={routeProps => <ProblemListContainer {...routeProps}/>} />
-                            <Route exact path={`${this.props.match.url}/postedjobs/all/:problemID/solutions/` } render={routeProps => <ProblemSolutionContainer userInfo={this.props.userInfo} submit_contract={this.props.submit_contract} resultSolutionList={this.props.resultSolutionList} get_solution_list={this.props.get_solution_list} {...routeProps} />}/> 
-                        </Switch> : <Spin/>}
+                                <Route exact path={`${this.props.match.url}/postedjobs/:postedType`} render={routeProps => <ProblemListContainer {...routeProps} />} />
+                                <Route exact path={`${this.props.match.url}/postedjobs/all/:problemID/solutions/`} render={routeProps => <ProblemSolutionContainer userInfo={this.props.userInfo} submit_contract={this.props.submit_contract} resultSolutionList={this.props.resultSolutionList} get_solution_list={this.props.get_solution_list} {...routeProps} />} />
+                                <Route exact path={`${this.props.match.url}/cv`} render={routeProps => <ClientInfoPage addWalletAddress={this.props.addWalletAddress} userInfo={this.props.userInfo} {...routeProps} />} />
+
+                            </Switch> : <Spin />}
 
                     </Content>
                     <Footer>Footer</Footer>
@@ -93,7 +101,7 @@ class DashboardContainer extends Component {
 function mapState2Props(state) {
     return {
         userInfo: state.accountReducer.userInfo,
-        resultSolutionList:state.solutionReducer.resultSolutionList
+        resultSolutionList: state.solutionReducer.resultSolutionList
     };
 }
 
@@ -101,7 +109,9 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators({
         push,
         get_solution_list,
-        submit_contract
+        submit_contract,
+        addWalletAddress,
+        getUserWalletAdress
 
     }, dispatch)
 

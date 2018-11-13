@@ -57,7 +57,7 @@ class ProblemListContainer extends Component {
 
         return (
             <div>
-                <JobList data={this.props.resultProblemList} match={this.props.match} />        
+                <JobList userInfo={this.props.userInfo} data={this.props.resultProblemList} match={this.props.match} />        
                 <Button onClick={this.openCreateProblemModal} type="primary" shape="circle" icon="plus" size={"large"} />
                 <Modal
                     visible={this.state.showCreateProblemModal}

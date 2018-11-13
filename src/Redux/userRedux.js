@@ -23,7 +23,8 @@ import {LOGIN_GG_SUCCESS,
     SET_RESULT_PROBLEM,
     SET_RESULT_SOLUTION_LIST,
 
-    SET_RESULT_CONTRACT_LIST
+    SET_RESULT_CONTRACT_LIST,
+    SET_USER_WALLET_ADDRESS
     } from './Actions/actions' ;
 
 
@@ -64,6 +65,7 @@ export const accountReducer = (state = DefaultAccountState , action) => {
     switch (action.type) {
         case SET_USER_INFO_AFTER_LOGIN: return {...state, userInfo:action.userInfo}
         case SIGNOUT:return{...state,userInfo:null};
+        case SET_USER_WALLET_ADDRESS:return{...state,userInfo:{...state.userInfo,walletAddress:action.walletAdress}}
         default: return state;
     }
 }

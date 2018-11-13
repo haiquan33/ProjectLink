@@ -11,7 +11,8 @@ import {
     signout,
     set_result_problem,
     set_result_solution_list,
-    set_result_contract_list
+    set_result_contract_list,
+    set_user_wallet_address
 } from './Actions/actions';
 
 
@@ -28,6 +29,12 @@ export function loginGG() {
                 const user = result.user;
                 dispatch(setUserInfoAfterLogin(user));
 
+                firestore.collection(AccountData_Table).doc(user.uid).get().then((doc) => {
+                    if (doc.exists) {
+                        let address = doc.data().walletAddress;
+                        dispatch(set_user_wallet_address(address));
+                    }
+                })
             });
 
     }
@@ -38,6 +45,12 @@ export function checkLogged_and_Login_automatically() {
         auth.onAuthStateChanged((user) => {
             if (user) {
                 dispatch(setUserInfoAfterLogin(user))
+                firestore.collection(AccountData_Table).doc(user.uid).get().then((doc) => {
+                    if (doc.exists) {
+                        let address = doc.data().walletAddress;
+                        dispatch(set_user_wallet_address(address));
+                    }
+                })
             }
         });
     }
@@ -169,7 +182,7 @@ export function submit_contract(data) {
             deadline_1: data.deadline_1,
             deadline_2: data.deadline_2,
             deadline_3: data.deadline_3,
-            status:"pending"
+            status: "pending"
 
 
         })
@@ -180,10 +193,10 @@ export function submit_contract_confirmation(data) {
     return (dispatch) => {
 
         firestore.collection(Problem_Contract_Table).doc(data.problemID).update({
-           
+
             SolutionOwnerSign: data.SolutionOwnerSign,
-            status:"accepted"
-  
+            status: "accepted"
+
 
 
         })
@@ -195,7 +208,7 @@ export function submit_contract_confirmation(data) {
 
 export function get_contract_list_of_solution_owner(userID) {
     return (dispatch) => {
-        firestore.collection(Problem_Contract_Table).where("SolutionOwnerID","==",userID).get().then((querySnapshot) => {
+        firestore.collection(Problem_Contract_Table).where("SolutionOwnerID", "==", userID).get().then((querySnapshot) => {
             // if co du lieu thi lay ve
             let list = [];
             querySnapshot.forEach(function (doc) {
@@ -296,6 +309,27 @@ export function get_contract_list_of_solution_owner(userID) {
 //     }
 // }
 
+///------------- ACCOUNT----------------------
+export function addWalletAddress(item, userInfo) {
+    return (dispatch) => {
+
+        firestore.collection(AccountData_Table).doc(userInfo.uid).set({
+            walletAddress: item
+        })
+    }
+}
+
+export function getUserWalletAdress(userID) {
+    return (dispatch) => {
+
+        firestore.collection(AccountData_Table).doc(userID).get().then((doc) => {
+            if (doc.exists) {
+                let address = doc.data().walletAddress;
+                dispatch(set_user_wallet_address(address));
+            }
+        })
+    }
+}
 
 //ssignout user
 export function SignOutGG() {

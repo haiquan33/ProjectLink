@@ -73,6 +73,6 @@ export default class NumericInputDemo extends React.Component {
   }
 
   render() {
-    return <NumericInput style={{ width: 180 }} placeholder={this.props.placeholder} value={this.state.value} onChange={this.props.onChange?this.props.onChange:this.onChange} />;
+    return <NumericInput style={{ width: 180 }} placeholder={this.props.placeholder} value={this.props.value?this.props.value:this.state.value} onChange={this.props.onChange?this.props.onChange:this.onChange} />;
   }
 }
