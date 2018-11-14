@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 
-import { Button } from 'antd'
+import { Button,Select } from 'antd'
 import SignatureCanvas from 'react-signature-canvas';
 
 import { DatePicker, Alert } from 'antd';
@@ -9,6 +9,12 @@ import { DatePicker, Alert } from 'antd';
 import './ContractConfirmModal.css'
 import { __makeTemplateObject } from 'tslib';
 
+import web3 from '../../../../../../BlockChainAPI/web3'
+
+
+
+
+const Option = Select.Option;
 class ContractConfirmModal extends Component {
   constructor(props) {
     super(props);
@@ -20,6 +26,7 @@ class ContractConfirmModal extends Component {
     this.set_deadline1 = this.set_deadline1.bind(this);
     this.set_deadline2 = this.set_deadline2.bind(this);
     this.set_deadline3 = this.set_deadline3.bind(this);
+    this.handleWalletChange=this.handleWalletChange.bind(this);
   }
 
 
@@ -57,10 +64,11 @@ class ContractConfirmModal extends Component {
 
   submit() {
     let solutionOwnerSign = this.solutionOwnerSignCanvas.toData();
+
     let temp_data = {
       problemID:this.props.data.id, 
-      SolutionOwnerSign: JSON.stringify(solutionOwnerSign)
-
+      SolutionOwnerSign: JSON.stringify(solutionOwnerSign),
+      SolutionOwnerWallet:this.state.defaultWallet
     }
   
     this.props.submit_contract_confirmation(temp_data);
@@ -69,13 +77,28 @@ class ContractConfirmModal extends Component {
    
   }
 
+  handleWalletChange(value)
+  {
+    this.setState({defaultWallet:value})
+  }
+
   componentDidMount(){
     let ProblemOwnerSignature=JSON.parse(this.props.data.ProblemOwnerSign);
-    this.problemOwnerSignCanvas.fromData(ProblemOwnerSignature)
+    this.problemOwnerSignCanvas.fromData(ProblemOwnerSignature);
+
+    let accountList=web3.eth.accounts;
+
+    this.setState({walletList:accountList, defaultWallet:accountList[0]});
+
   }
 
   render() {
-   
+    let walletSelect=[];
+    if (this.state.walletList){
+        for (var wallet in this.state.walletList){
+                walletSelect.push(<Option value={this.state.walletList[wallet]}>{this.state.walletList[wallet]}</Option>)
+        }
+    }
     return (
       <div className="ContractSubmitModal">
         {this.state.alert ? <Alert
@@ -85,6 +108,12 @@ class ContractConfirmModal extends Component {
 
         />
           : null}
+
+        {this.state.walletList?
+          <Select defaultValue={this.state.walletList[0]} onChange={this.handleWalletChange}>
+              {walletSelect}
+          </Select>    
+          :null }
 
         <div>Hạn thanh toán đợt 1</div>
         <DatePicker defaultValue={moment(this.props.data.deadline_1, 'DD-MM-YYYY')} onChange={this.set_deadline1} />

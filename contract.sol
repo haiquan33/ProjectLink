@@ -50,10 +50,13 @@ contract ERC20Interface {
     function approve(address spender, uint tokens) public returns (bool success);
     function transferFrom(address from, address to, uint tokens) public returns (bool success);
     
-    function lockBalance(address tokenOwner,uint tokens) public returns(bool success);
+    function lockBalance(uint tokens) public returns(bool success);
     function getLockedBalance(address tokenOwner) public constant returns(uint tokens);
+    function myBalance() public constant returns (uint tokens);
     event Transfer(address indexed from, address indexed to, uint tokens);
     event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
+
+    
 }
 
 
@@ -139,9 +142,9 @@ contract ProjectLinkToken is ERC20Interface, Owned, SafeMath {
         return balances[tokenOwner];
     }
     //lock an amount of token from this address to make sure this tokenOwner cant use amount of tokens
-    function lockBalance(address tokenOwner,uint tokens) public returns(bool success){
-        balances[tokenOwner]=safeSub(balances[tokenOwner],tokens);
-        lockedBalance[tokenOwner]=safeAdd(lockedBalance[tokenOwner],tokens);
+    function lockBalance(uint tokens) public returns(bool success){
+        balances[msg.sender]=safeSub(balances[msg.sender],tokens);
+        lockedBalance[msg.sender]=safeAdd(lockedBalance[msg.sender],tokens);
         return true;
     }
     
@@ -195,6 +198,10 @@ contract ProjectLinkToken is ERC20Interface, Owned, SafeMath {
     }
 
 
+
+    function myBalance() public constant returns (uint tokens){
+        return  balances[msg.sender];
+    }
     // ------------------------------------------------------------------------
     // Returns the amount of tokens approved by the owner that can be
     // transferred to the spender's account

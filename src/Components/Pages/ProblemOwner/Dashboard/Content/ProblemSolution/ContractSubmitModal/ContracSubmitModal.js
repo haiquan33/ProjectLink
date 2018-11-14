@@ -3,39 +3,49 @@ import { Upload, Button } from 'antd'
 import SignatureCanvas from 'react-signature-canvas';
 import firebase_init from '../../../../../../../firebase'
 import FileUploader from "react-firebase-file-uploader";
-import { DatePicker, Alert } from 'antd';
+import { DatePicker, Alert, Select } from 'antd';
 import NumericInputDemo from '../../../../../../Components/Common/NumericInput'
 
 import './ContractSubmitModal.css'
 import { __makeTemplateObject } from 'tslib';
 
 import { tokenAPI } from '../../../../../../../BlockChainAPI/tokenAPI'
+import web3 from '../../../../../../../BlockChainAPI/web3'
 import { tempConst } from '../../../../../../../TempConst';
 import { userInfo } from 'os';
 
 
+
+const Option = Select.Option;
 class ContractSubmitModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
       alertError: "",
       alert: false,
-      firstPaidToken:null,
-      secondPaidToken:null,
-      thirdPaidToken:null,
+      firstPaidToken: null,
+      secondPaidToken: null,
+      thirdPaidToken: null,
     };
     this.submit = this.submit.bind(this);
     this.set_deadline1 = this.set_deadline1.bind(this);
     this.set_deadline2 = this.set_deadline2.bind(this);
     this.set_deadline3 = this.set_deadline3.bind(this);
 
-    this.onFirstPaidTokenChange=this.onFirstPaidTokenChange.bind(this);
-    this.onSecondPaidTokenChange=this.onSecondPaidTokenChange.bind(this);
-    this.onThirdPaidTokenChange=this.onThirdPaidTokenChange.bind(this);
-
+    this.onFirstPaidTokenChange = this.onFirstPaidTokenChange.bind(this);
+    this.onSecondPaidTokenChange = this.onSecondPaidTokenChange.bind(this);
+    this.onThirdPaidTokenChange = this.onThirdPaidTokenChange.bind(this);
+    this.checkContractData = this.checkContractData.bind(this);
+    this.handleWalletChange=this.handleWalletChange.bind(this);
 
   }
-
+  checkContractData() {
+    if (!this.state.fileurl) return false;
+    if (!this.state.firstPaidToken) return false;
+    if (!this.state.secondPaidToken) return false;
+    if (!this.state.thirdPaidToken) return false;
+    return true;
+  }
 
   handleChangeUsername = event =>
     this.setState({ username: event.target.value });
@@ -68,13 +78,13 @@ class ContractSubmitModal extends Component {
 
   }
 
-  onFirstPaidTokenChange=(value) => {
+  onFirstPaidTokenChange = (value) => {
     this.setState({ firstPaidToken: value });
   }
-  onSecondPaidTokenChange=(value) => {
+  onSecondPaidTokenChange = (value) => {
     this.setState({ secondPaidToken: value });
   }
-  onThirdPaidTokenChange=(value) => {
+  onThirdPaidTokenChange = (value) => {
     this.setState({ thirdPaidToken: value });
   }
 
@@ -93,27 +103,55 @@ class ContractSubmitModal extends Component {
       deadline_1: this.state.deadline_1,
       deadline_2: this.state.deadline_2,
       deadline_3: this.state.deadline_3,
-      
+      firstPaidToken: this.state.firstPaidToken,
+      secondPaidToken: this.state.secondPaidToken,
+      thirdPaidToken: this.state.thirdPaidToken,
+      ProblemOwnerWallet:this.state.defaultWallet
+
     }
-    console.log(this.props.userInfo.walletAddress)
-    let balance = parseInt(tokenAPI.balanceOf(this.props.userInfo.walletAddress));
-    console.log("balance ",balance,"first paid ",this.state.firstPaidToken)
-    if (balance < this.state.firstPaidToken) {
     
+    web3.eth.defaultAccount = this.state.defaultWallet;
+    //console.log("my Balance",);
+    let balance = parseInt(tokenAPI.myBalance());
+
+
+    if (balance < this.state.firstPaidToken) {
+
       this.setState({ alertError: "Không đủ số dư thực hiện!  Số dư hiện tại: " + balance, alert: true });
       return;
     }
 
-    if (this.state.fileurl) {
+    if (this.checkContractData()) {
       this.props.submit_contract(temp_data);
       this.props.closeContractSubmitModal();
+
+      //lock token 
+      tokenAPI.lockBalance(this.state.firstPaidToken)
+
     }
     else {
       this.setState({ alertError: "Chưa upload file hợp đồng", alert: true })
     }
   }
 
+
+  handleWalletChange(value)
+{
+  this.setState({defaultWallet:value})
+}
+  componentDidMount(){
+    let accountList=web3.eth.accounts;
+
+    this.setState({walletList:accountList, defaultWallet:accountList[0]});
+  }
+
   render() {
+    let walletSelect=[];
+    if (this.state.walletList){
+        for (var wallet in this.state.walletList){
+                walletSelect.push(<Option value={this.state.walletList[wallet]}>{this.state.walletList[wallet]}</Option>)
+        }
+    }
     return (
       <div className="ContractSubmitModal">
         {this.state.alert ? <Alert
@@ -123,16 +161,23 @@ class ContractSubmitModal extends Component {
 
         />
           : null}
+        
+        {this.state.walletList?
+          <Select defaultValue={this.state.walletList[0]} onChange={this.handleWalletChange}>
+              {walletSelect}
+          </Select>    
+          :null }
+      
 
         <div>Hạn thanh toán đợt 1</div>
-             <DatePicker onChange={this.set_deadline1} />
-            <NumericInputDemo  value={this.state.firstPaidToken} onChange={this.onFirstPaidTokenChange} placeholder="Nhập số tiền thanh toán đợt này" />
+        <DatePicker onChange={this.set_deadline1} />
+        <NumericInputDemo value={this.state.firstPaidToken} onChange={this.onFirstPaidTokenChange} placeholder="Nhập số tiền thanh toán đợt này" />
         <div>Hạn thanh toán đợt 2</div>
-            <DatePicker onChange={this.set_deadline2} />
-            <NumericInputDemo value={this.state.secondPaidToken} onChange={this.onSecondPaidTokenChange}  placeholder="Nhập số tiền thanh toán đợt này" />
+        <DatePicker onChange={this.set_deadline2} />
+        <NumericInputDemo value={this.state.secondPaidToken} onChange={this.onSecondPaidTokenChange} placeholder="Nhập số tiền thanh toán đợt này" />
         <div>Hạn thanh toán đợt 3</div>
-           <DatePicker onChange={this.set_deadline3} />
-           <NumericInputDemo value={this.state.thirdPaidToken} onChange={this.onThirdPaidTokenChange}  placeholder="Nhập số tiền thanh toán đợt này" />
+        <DatePicker onChange={this.set_deadline3} />
+        <NumericInputDemo value={this.state.thirdPaidToken} onChange={this.onThirdPaidTokenChange} placeholder="Nhập số tiền thanh toán đợt này" />
         <div>File hợp đồng</div>
         <FileUploader
           accept="image/*"

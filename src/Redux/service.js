@@ -182,6 +182,10 @@ export function submit_contract(data) {
             deadline_1: data.deadline_1,
             deadline_2: data.deadline_2,
             deadline_3: data.deadline_3,
+            firstPaidToken: data.firstPaidToken,
+            secondPaidToken: data.secondPaidToken,
+            thirdPaidToken: data.thirdPaidToken,
+            ProblemOwnerWallet:data.ProblemOwnerWallet,
             status: "pending"
 
 
@@ -193,7 +197,7 @@ export function submit_contract_confirmation(data) {
     return (dispatch) => {
 
         firestore.collection(Problem_Contract_Table).doc(data.problemID).update({
-
+            SolutionOwnerWallet:data.SolutionOwnerWallet,
             SolutionOwnerSign: data.SolutionOwnerSign,
             status: "accepted"
 
