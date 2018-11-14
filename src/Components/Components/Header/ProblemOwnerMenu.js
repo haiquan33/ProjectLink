@@ -20,7 +20,7 @@ export default class ProblemOwnerMenu extends React.Component {
                     <a onClick={() => this.props.NavigateTo("dashboard")}>Dashboard</a>
                 </Menu.Item>
                 <Menu.Item key="2">
-                    <a >Thông báo</a>
+                    <a  onClick={() => this.props.openProblemOwnerNotificationModal()} >Thông báo</a>
                 </Menu.Item>
                 <Menu.Divider />
                 <Menu.Item key="3"> <a onClick={this.props.SignOutGG} >Đăng thoát</a></Menu.Item>
