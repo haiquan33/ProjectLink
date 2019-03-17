@@ -29,7 +29,7 @@ class ProblemViewPage extends React.Component {
 
   render() {
     return (<div>
-                {this.props.resultProblem?<ProblemDetail problem={this.props.resultProblem} />:null}
+                <ProblemDetail data={this.props.resultProblem} />
                 
                 <ProblemSolutionSubmit handle_submit_solution={this.handle_submit_solution} />
         </div>);

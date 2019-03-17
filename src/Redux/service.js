@@ -2,7 +2,7 @@
 
 import firebase_init, { auth, Authprovider, firestore } from '../firebase.js';
 
-
+import firebase from 'firebase'
 
 import {
 
@@ -106,14 +106,23 @@ export function get_All_Problem_List_from_this_account(accountUID) {
 
 
 
-export function add_new_problem(accountUID, problem) {
+export function add_new_problem(userInfo, problem) {
     return (dispatch) => {
         //  firebase_init.database().ref(Problem_Table+accountUID).push().set({problem});
+        const data = {
+            ...problem,
+            owner: {
+                uid: userInfo.uid,
+                displayName: userInfo.displayName,
+                photoURL: userInfo.photoURL
+            },
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
 
+        }
         //Add to problem table
-        firestore.collection(Problem_Table).add(problem).then(() => {
+        firestore.collection(Problem_Table).add(data).then(() => {
             //sau khi thêm dữ liệu problem thì load lại các problem đã tạo
-            firestore.collection(Problem_Table).where("uid", "==", accountUID).get().then(function (snapshot) {
+            firestore.collection(Problem_Table).where("uid", "==", userInfo.uid).get().then(function (snapshot) {
 
                 let list = [];
                 snapshot.forEach(function (doc) {
@@ -185,7 +194,7 @@ export function submit_contract(data) {
             firstPaidToken: data.firstPaidToken,
             secondPaidToken: data.secondPaidToken,
             thirdPaidToken: data.thirdPaidToken,
-            ProblemOwnerWallet:data.ProblemOwnerWallet,
+            ProblemOwnerWallet: data.ProblemOwnerWallet,
             status: "pending"
 
 
@@ -197,7 +206,7 @@ export function submit_contract_confirmation(data) {
     return (dispatch) => {
 
         firestore.collection(Problem_Contract_Table).doc(data.problemID).update({
-            SolutionOwnerWallet:data.SolutionOwnerWallet,
+            SolutionOwnerWallet: data.SolutionOwnerWallet,
             SolutionOwnerSign: data.SolutionOwnerSign,
             status: "accepted"
 

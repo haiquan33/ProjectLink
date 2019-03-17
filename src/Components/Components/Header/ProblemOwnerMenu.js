@@ -10,7 +10,7 @@ export default class ProblemOwnerMenu extends React.Component {
     }
 
     render() {
-        let avatar = this.props.userInfo.pictureURL ? this.props.userInfo.pictureURL : default_avatar;
+        let avatar = this.props.userInfo.photoURL ? this.props.userInfo.photoURL : default_avatar;
         let menu = (
             <Menu>
                 <Menu.Item key="0">

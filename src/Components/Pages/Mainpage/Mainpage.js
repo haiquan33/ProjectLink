@@ -33,8 +33,8 @@ class Mainpage extends Component {
       <div className="Mainpage">
      
         <PopularProject resultProblemList={this.props.resultProblemList}/>
-        <Divider />
-        <NewProjectContainer />
+        
+       
 
       </div>
     );

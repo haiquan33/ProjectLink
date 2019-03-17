@@ -15,8 +15,7 @@ export default class ClientInfoPage extends Component {
   render() {
     return (
       <div>
-             <Input placeholder="Địa chỉ ví ảo của bạn"  value={this.state.walletAddress} onChange={this.onChangeWalletAdress}/>
-             <Button onClick={this.SubmitWalletAddress}>Submit</Button>
+            
       </div>
     )
   }

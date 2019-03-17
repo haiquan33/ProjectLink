@@ -8,8 +8,7 @@ class MostPopularProjectContainer extends React.Component {
 
     render() {
         return <div className="MostPopularProjectContainer">
-            <img className="ProjectImage" src="https://futureoflife.org/wp-content/uploads/2017/12/2018-AI-safety-grants.jpg"   />
-            <div class="Title">Bottom Left</div>
+        
         </div>;
     }
 

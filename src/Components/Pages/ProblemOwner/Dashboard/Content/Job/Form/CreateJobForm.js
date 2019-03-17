@@ -134,7 +134,7 @@ class CreateJobForm extends Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 let problems = { ...values, uid: this.props.userInfo.uid };
-                this.props.add_new_problem(this.props.userInfo.uid, problems);
+                this.props.add_new_problem(this.props.userInfo, problems);
             }
 
 

@@ -1,9 +1,14 @@
+.ant-card.PostItem.ant-card-bordered.ant-card-hoverable{
+    width: 800px !important;
+    margin: 0px!important;
+}
 .PostMeta{
     display: flex;
     flex-direction: row;
     align-content: center;
     align-items: center;
     justify-items: center;
+    
 }
 .PostMeta>p{
   
@@ -35,16 +40,19 @@
     align-content: flex-start;
     justify-content: flex-start;
     margin: 15px;
-    width: 80%;
+    
+    text-decoration: none !important;
+    color: black !important;
 }
 
 /*Post title */
-.PostContent>.ReactCollapse--collapse>.ReactCollapse--content>.Title{
-    font-family: "Arial Rounded MT Bold";
+.PostContent>.ReactCollapse--collapse>.ReactCollapse--content>.Problem-Title{
+    color: black;
     font-size: 20px;
     font-weight: bold ;
     text-align: justify;
- 
+
+   
 }
 
 
@@ -80,8 +88,8 @@
 
 
 .likeBtn{
-    width: 25px;
-    height: 25px;
+    width: 22px;
+    height: 22px;
     
     transition: all ease .5s;
     user-select: none;
@@ -115,14 +123,4 @@
 	border: 1px dotted #848687;
 	color: #3a7999;
 	background: rgba(0,0,0,0);
-}
-
-.problem-requirement-title{
-            font-weight: bold;
-            font-size: 40;
-            margin-top: 10px;
-            text-align: left
-}
-.problem-requirement-content{
-    text-align: left
 }
