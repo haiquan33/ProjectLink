@@ -32,7 +32,7 @@ class Mainpage extends Component {
     return (
       <div className="Mainpage">
      
-        <PopularProject resultProblemList={this.props.resultProblemList}/>
+        <PopularProject openUserInfoViewModal={this.props.openUserInfoViewModal} resultProblemList={this.props.resultProblemList}/>
         
        
 

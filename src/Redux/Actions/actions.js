@@ -39,7 +39,7 @@ export const SET_RESULT_CONTRACT_LIST="SET_RESULT_CONTRACT_LIST";
 
 ////////////////////
 export const SET_USER_WALLET_ADDRESS="SET_USER_WALLET_ADDRESS"
-
+export const SET_USER_COMPANY_INFO="SET_USER_COMPANY_INFO"
 
 ////////////// LOGIN SIGNUP action //////////////////////
 
@@ -180,6 +180,13 @@ export function set_user_wallet_address(address){
     return {
         type:SET_USER_WALLET_ADDRESS,
         walletAdress:address
+    }
+}
+
+export function set_user_company_info(data){
+    return{
+        type:SET_USER_COMPANY_INFO,
+        data
     }
 }
 

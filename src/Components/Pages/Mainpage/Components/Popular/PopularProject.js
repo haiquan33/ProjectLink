@@ -43,13 +43,13 @@ class PopularProject extends Component {
 
             < div >
                 <Tabs defaultActiveKey="ALL" >
-                    <TabPane tab="ALL" key="ALL"><PopularTabPane faculty="ALL" data={this.props.resultProblemList} /> </TabPane>
-                    <TabPane tab="IT" key="IT"><PopularTabPane faculty="IT" data={categoryData['IT']} /></TabPane>
-                    <TabPane tab="PHYSICS" key="PHYSICS"><PopularTabPane faculty="PHYSICS" data={categoryData['PHYSICS']} /></TabPane>
-                    <TabPane tab="MATH" key="MATH"><PopularTabPane faculty="MATH" data={categoryData['MATH']} /></TabPane>
-                    <TabPane tab="BIOLOGY" key="BIOLOGY"><PopularTabPane faculty="BIOLOGY" data={categoryData['BIOLOGY']} /></TabPane>
-                    <TabPane tab="ENVIROMENT" key="ENVIROMENT"><PopularTabPane faculty="ENVIROMENT" data={categoryData['ENVIROMENT']} /></TabPane>
-                    <TabPane tab="OTHERS" key="OTHERS"><PopularTabPane faculty="OTHERS" data={categoryData['OTHERS']} /></TabPane>
+                    <TabPane tab="ALL" key="ALL"><PopularTabPane openUserInfoViewModal={this.props.openUserInfoViewModal} faculty="ALL" data={this.props.resultProblemList} /> </TabPane>
+                    <TabPane tab="IT" key="IT"><PopularTabPane openUserInfoViewModal={this.props.openUserInfoViewModal} faculty="IT" data={categoryData['IT']} /></TabPane>
+                    <TabPane tab="PHYSICS" key="PHYSICS"><PopularTabPane openUserInfoViewModal={this.props.openUserInfoViewModal} faculty="PHYSICS" data={categoryData['PHYSICS']} /></TabPane>
+                    <TabPane tab="MATH" key="MATH"><PopularTabPane openUserInfoViewModal={this.props.openUserInfoViewModal} faculty="MATH" data={categoryData['MATH']} /></TabPane>
+                    <TabPane tab="BIOLOGY" key="BIOLOGY"><PopularTabPane openUserInfoViewModal={this.props.openUserInfoViewModal} faculty="BIOLOGY" data={categoryData['BIOLOGY']} /></TabPane>
+                    <TabPane tab="ENVIROMENT" key="ENVIROMENT"><PopularTabPane openUserInfoViewModal={this.props.openUserInfoViewModal} faculty="ENVIROMENT" data={categoryData['ENVIROMENT']} /></TabPane>
+                    <TabPane tab="OTHERS" key="OTHERS"><PopularTabPane openUserInfoViewModal={this.props.openUserInfoViewModal} faculty="OTHERS" data={categoryData['OTHERS']} /></TabPane>
                 </Tabs>
             </div >
         );

@@ -1,0 +1,8 @@
+.ClientInfoPageContainer{
+    display: flex;
+    width: 100%;
+    padding: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}

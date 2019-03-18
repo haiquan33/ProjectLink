@@ -19,11 +19,11 @@ import SideMenu from './SideMenu/SideMenu';
 import MyHeader from './Header/MyHeader';
 import ProblemListContainer from './Content/Job/ProblemListContainer';
 import ProblemSolutionContainer from './Content/ProblemSolution/ProblemSolutionContainer';
-import ClientInfoPage from './Content/ClientInfoPage/ClientInfoPage'
+import { WrappedClientInfoPageForm } from './Content/ClientInfoPage/ClientInfoPage'
 
 
 //Redux
-import { get_solution_list, submit_contract, addWalletAddress, getUserWalletAdress } from '../../../../Redux/service';
+import { get_solution_list, submit_contract, addWalletAddress, getUserWalletAdress,getUserCompanyInfo,saveUserCompanyInfo } from '../../../../Redux/service';
 
 
 //Assets
@@ -55,7 +55,7 @@ class DashboardContainer extends Component {
     }
 
     componentDidMount() {
-   
+               
     }
     render() {
         // console.log(this.props.match.path);
@@ -82,7 +82,7 @@ class DashboardContainer extends Component {
 
                                 <Route exact path={`${this.props.match.url}/postedjobs/:postedType`} render={routeProps => <ProblemListContainer {...routeProps} />} />
                                 <Route exact path={`${this.props.match.url}/postedjobs/all/:problemID/solutions/`} render={routeProps => <ProblemSolutionContainer userInfo={this.props.userInfo} submit_contract={this.props.submit_contract} resultSolutionList={this.props.resultSolutionList} get_solution_list={this.props.get_solution_list} {...routeProps} />} />
-                                <Route exact path={`${this.props.match.url}/cv`} render={routeProps => <ClientInfoPage addWalletAddress={this.props.addWalletAddress} userInfo={this.props.userInfo} {...routeProps} />} />
+                                <Route exact path={`${this.props.match.url}/cv`} render={routeProps => <WrappedClientInfoPageForm saveUserCompanyInfo={this.props.saveUserCompanyInfo} userCompanyInfo={this.props.userCompanyInfo} userInfo={this.props.userInfo} {...routeProps} />} />
 
                             </Switch> : <Spin />}
 
@@ -101,6 +101,7 @@ class DashboardContainer extends Component {
 function mapState2Props(state) {
     return {
         userInfo: state.accountReducer.userInfo,
+        userCompanyInfo:state.accountReducer.userCompanyInfo,
         resultSolutionList: state.solutionReducer.resultSolutionList
     };
 }
@@ -111,7 +112,9 @@ const mapDispatchToProps = dispatch => {
         get_solution_list,
         submit_contract,
         addWalletAddress,
-        getUserWalletAdress
+        getUserWalletAdress,
+        getUserCompanyInfo,
+        saveUserCompanyInfo
 
     }, dispatch)
 

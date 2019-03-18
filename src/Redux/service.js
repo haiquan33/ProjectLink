@@ -12,7 +12,8 @@ import {
     set_result_problem,
     set_result_solution_list,
     set_result_contract_list,
-    set_user_wallet_address
+    set_user_wallet_address,
+    set_user_company_info
 } from './Actions/actions';
 
 
@@ -28,13 +29,8 @@ export function loginGG() {
             .then((result) => {
                 const user = result.user;
                 dispatch(setUserInfoAfterLogin(user));
-
-                firestore.collection(AccountData_Table).doc(user.uid).get().then((doc) => {
-                    if (doc.exists) {
-                        let address = doc.data().walletAddress;
-                        dispatch(set_user_wallet_address(address));
-                    }
-                })
+              
+                
             });
 
     }
@@ -45,12 +41,7 @@ export function checkLogged_and_Login_automatically() {
         auth.onAuthStateChanged((user) => {
             if (user) {
                 dispatch(setUserInfoAfterLogin(user))
-                firestore.collection(AccountData_Table).doc(user.uid).get().then((doc) => {
-                    if (doc.exists) {
-                        let address = doc.data().walletAddress;
-                        dispatch(set_user_wallet_address(address));
-                    }
-                })
+                dispatch( getUserCompanyInfo(user.uid))
             }
         });
     }
@@ -342,6 +333,36 @@ export function getUserWalletAdress(userID) {
             }
         })
     }
+}
+
+export function saveUserCompanyInfo(data,userId){
+    return (dispatch)=>{
+        firestore.collection(AccountData_Table).doc(userId).set({
+            companyInfo: data
+        })
+    }
+}
+
+export function getUserCompanyInfo(userId) {
+    return (dispatch) => {
+        firestore.collection(AccountData_Table).doc(userId).get().then((doc) => {
+            if (doc.exists) {
+                let companyInfo = doc.data().companyInfo;
+                dispatch(set_user_company_info(companyInfo))
+            }
+        })
+    }
+}
+
+export function getUserCompanyInfoForViewing(userId,callback) {
+        console.log(userId)
+        firestore.collection(AccountData_Table).doc(userId).get().then((doc) => {
+            if (doc.exists) {
+                let companyInfo = doc.data().companyInfo;
+                callback(companyInfo)
+            }
+        })
+    
 }
 
 //ssignout user

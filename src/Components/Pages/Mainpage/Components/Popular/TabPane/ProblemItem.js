@@ -27,7 +27,7 @@ class ProblemItem extends React.Component {
                     src={item.owner.photoURL ? item.owner.photoURL : null}
                     icon={item.owner.photoURL ? null : "user"} />
                 <div className="UserName_Time">
-                    <p style={{ fontWeight: "bold" }}>{item.owner.displayName}</p>
+                    <p onClick= {()=>this.props.openUserInfoViewModal(item.owner.uid)} style={{ fontWeight: "bold" }}>{item.owner.displayName}</p>
                     <p>{moment(item.timestamp).fromNow()}</p>
                 </div>
              

@@ -1,10 +1,11 @@
-import { createStore,combineReducers } from 'redux';
+import { createStore, combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux'
 
 
 
 //ACtions Import
-import {LOGIN_GG_SUCCESS,
+import {
+    LOGIN_GG_SUCCESS,
     START_CHECKING_LOGIN_INFO,
     FINISH_CHECKING_LOGIN_INFO,
     FINISH_CHECKING_LOGIN_FAILED,
@@ -17,79 +18,81 @@ import {LOGIN_GG_SUCCESS,
     SIGN_UP_FAILED,
 
     SIGN_UP_STATUS_RESET,
-    
+
     SIGNOUT,
     SET_RESULT_PROBLEM_LIST,
     SET_RESULT_PROBLEM,
     SET_RESULT_SOLUTION_LIST,
 
     SET_RESULT_CONTRACT_LIST,
-    SET_USER_WALLET_ADDRESS
-    } from './Actions/actions' ;
+    SET_USER_WALLET_ADDRESS,
+    SET_USER_COMPANY_INFO
+} from './Actions/actions';
 
 
 
 
 
 export const DefaultAccountState = {
-    isCheckingLoginInfo:false,
-    isCheckingSignUpInfo:false, 
-    isCompleteSignUpSuccessfully:false,
-
-    isGettingUserInfo:false,
+    isCheckingLoginInfo: false,
+    isCheckingSignUpInfo: false,
+    isCompleteSignUpSuccessfully: false,
+    userCompanyInfo: null,
+    isGettingUserInfo: false,
     num: 1,
-    userInfo:null
-   
-   
+    userInfo: null
+
+
 }
 
 
 
 export const DefaultProblemState = {
-    resultProblemList:null,
-    resultProblem:null
-   
+    resultProblemList: null,
+    resultProblem: null
+
 }
 
-export const DefaultSolutionState={
-    resultSolutionList:null
+export const DefaultSolutionState = {
+    resultSolutionList: null
 }
 
-export const DefaultContractState={
-    resultContractList:null
+export const DefaultContractState = {
+    resultContractList: null
 }
 
 
-export const accountReducer = (state = DefaultAccountState , action) => {
-    let count_temp=0;
+export const accountReducer = (state = DefaultAccountState, action) => {
+    let count_temp = 0;
     switch (action.type) {
-        case SET_USER_INFO_AFTER_LOGIN: return {...state, userInfo:action.userInfo}
-        case SIGNOUT:return{...state,userInfo:null};
-        case SET_USER_WALLET_ADDRESS:return{...state,userInfo:{...state.userInfo,walletAddress:action.walletAdress}}
+        case SET_USER_INFO_AFTER_LOGIN: return { ...state, userInfo: action.userInfo }
+        case SIGNOUT: return { ...state, userInfo: null };
+        case SET_USER_WALLET_ADDRESS: return { ...state, userInfo: { ...state.userInfo, walletAddress: action.walletAdress } }
+        case SET_USER_COMPANY_INFO: return { ...state, userCompanyInfo: action.data }
         default: return state;
     }
 }
 
 
-export const problemReducer = (state = DefaultProblemState,action)=>{
+export const problemReducer = (state = DefaultProblemState, action) => {
     switch (action.type) {
-        case SET_RESULT_PROBLEM_LIST: return {...state,resultProblemList:action.resultProblemList}
-        case SET_RESULT_PROBLEM:return{...state,resultProblem:action.resultProblem}
+        case SET_RESULT_PROBLEM_LIST: return { ...state, resultProblemList: action.resultProblemList }
+        case SET_RESULT_PROBLEM: return { ...state, resultProblem: action.resultProblem }
         default: return state;
     }
 }
 
-export const solutionReducer=(state=DefaultSolutionState,action)=>{
-    switch(action.type){
-        case SET_RESULT_SOLUTION_LIST:return{...state,resultSolutionList:action.resultSolutionList}
-        default:return state;   
+export const solutionReducer = (state = DefaultSolutionState, action) => {
+    switch (action.type) {
+        case SET_RESULT_SOLUTION_LIST: return { ...state, resultSolutionList: action.resultSolutionList }
+        default: return state;
     }
 }
 
-export const contractReducer=(state=DefaultContractState,action)=>{
-    switch(action.type){
-        case SET_RESULT_CONTRACT_LIST:return{...state,resultContractList:action.resultContractList}
-        default:return state;   
+export const contractReducer = (state = DefaultContractState, action) => {
+    switch (action.type) {
+        case SET_RESULT_CONTRACT_LIST: return { ...state, resultContractList: action.resultContractList }
+        default: return state;
     }
 }
 
