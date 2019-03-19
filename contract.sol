@@ -50,6 +50,8 @@ contract ERC20Interface {
     function approve(address spender, uint tokens) public returns (bool success);
     function transferFrom(address from, address to, uint tokens) public returns (bool success);
     
+   
+    
     function lockBalance(uint tokens) public returns(bool success);
     function getLockedBalance(address tokenOwner) public constant returns(uint tokens);
     function myBalance() public constant returns (uint tokens);
@@ -99,21 +101,63 @@ contract Owned {
     }
 }
 
+contract PLContractInterface{
+      struct PLContract {
+        address problemOwnerWallet;
+        address solutionOwnerWallet;
+        string problemID;
+        string deadline_1;
+         uint paid_1;
+        string deadline_2;
+         uint paid_2;
+        string deadline_3;
+         uint paid_3;
+        string IPFSHash;
+       
+    }
+    mapping(string=>PLContract) ContractDetail;
+    function setContractDetail(address problemOwnerWallet, address solutionOwnerWallet, string problemID,string deadline_1,uint paid_1,string deadline_2,uint paid_2,string deadline_3,uint paid_3,string IPFSHash) public {
+         
+            ContractDetail[problemID]=PLContract(problemOwnerWallet,solutionOwnerWallet,problemID,deadline_1,paid_1,deadline_2,paid_2,deadline_3,paid_3,IPFSHash);
+    }
+    function getDeadline_1(string problemID) public constant returns(string){
+            return ContractDetail[problemID].deadline_1;
+    }
+    function getPaid_1(string problemID) public constant returns(uint){
+            return ContractDetail[problemID].paid_1;
+    }
+    function getDeadline_2(string problemID) public constant returns(string){
+            return ContractDetail[problemID].deadline_2;
+    }
+     function getPaid_2(string problemID) public constant returns(uint){
+            return ContractDetail[problemID].paid_2;
+    }
+     function getDeadline_3(string problemID) public constant returns(string){
+            return ContractDetail[problemID].deadline_3;
+    }
+     function getPaid_3(string problemID) public constant returns(uint){
+            return ContractDetail[problemID].paid_3;
+    }
+    function getIPFSHash(string problemID) public constant returns(string){
+            return ContractDetail[problemID].IPFSHash;
+    }
+}
+
 
 // ----------------------------------------------------------------------------
 // ERC20 Token, with the addition of symbol, name and decimals and assisted
 // token transfers
 // ----------------------------------------------------------------------------
-contract ProjectLinkToken is ERC20Interface, Owned, SafeMath {
+contract ProjectLinkToken is ERC20Interface, Owned, SafeMath,PLContractInterface {
     string public symbol;
     string public  name;
     uint8 public decimals;
     uint public _totalSupply;
-
+    address ownerAddress;
     mapping(address => uint) balances;
     mapping(address => mapping(address => uint)) allowed;
     mapping(address=> uint) lockedBalance;
-
+  
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
@@ -122,8 +166,9 @@ contract ProjectLinkToken is ERC20Interface, Owned, SafeMath {
         name = "ProjectLink Token";
         decimals = 18;
         _totalSupply = 100000000000000000000000000;
-        balances[0x8c5bc189fedd9dedbcd012cc326798cade63bc18] = _totalSupply;
-        emit Transfer(address(0),0x8c5bc189fedd9dedbcd012cc326798cade63bc18, _totalSupply);
+        ownerAddress=0xBE3B0F069609F0aAe4FE67f49e4C13AdF5Dd53b1;
+        balances[ownerAddress] = _totalSupply;
+        emit Transfer(address(0),ownerAddress, _totalSupply);
     }
 
 
@@ -133,6 +178,9 @@ contract ProjectLinkToken is ERC20Interface, Owned, SafeMath {
     function totalSupply() public constant returns (uint) {
         return _totalSupply  - balances[address(0)];
     }
+
+
+    
 
 
     // ------------------------------------------------------------------------
