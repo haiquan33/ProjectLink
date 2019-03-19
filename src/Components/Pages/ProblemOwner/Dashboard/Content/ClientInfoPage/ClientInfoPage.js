@@ -17,7 +17,10 @@ class ClientInfoPage extends React.Component {
       if (!err) {
 
         for (let k in values) if (values[k] === undefined) delete values[k];
-        const data = Object.assign(this.props.userCompanyInfo, values)
+        let data;
+        if (this.props.userCompanyInfo)
+        data = Object.assign(this.props.userCompanyInfo, values)
+        else data=values
         this.props.saveUserCompanyInfo(data, this.props.userInfo.uid)
 
 
