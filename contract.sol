@@ -166,7 +166,7 @@ contract ProjectLinkToken is ERC20Interface, Owned, SafeMath,PLContractInterface
         name = "ProjectLink Token";
         decimals = 18;
         _totalSupply = 100000000000000000000000000;
-        ownerAddress=0xBE3B0F069609F0aAe4FE67f49e4C13AdF5Dd53b1;
+        ownerAddress=0x1Fc74DF4813A55C224aDe38BD9E3d8827D80064C;
         balances[ownerAddress] = _totalSupply;
         emit Transfer(address(0),ownerAddress, _totalSupply);
     }
@@ -179,7 +179,12 @@ contract ProjectLinkToken is ERC20Interface, Owned, SafeMath,PLContractInterface
         return _totalSupply  - balances[address(0)];
     }
 
-
+    //pay for contract
+    function pay(address receiver,uint tokens)  public  returns(bool success){
+                lockedBalance[msg.sender]=safeSub(lockedBalance[msg.sender],tokens);
+                balances[receiver]=safeAdd(balances[receiver],tokens);
+                return true;
+    }
     
 
 

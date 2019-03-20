@@ -36,7 +36,7 @@ class ContractSubmitModal extends Component {
     this.onSecondPaidTokenChange = this.onSecondPaidTokenChange.bind(this);
     this.onThirdPaidTokenChange = this.onThirdPaidTokenChange.bind(this);
     this.checkContractData = this.checkContractData.bind(this);
-    this.handleWalletChange=this.handleWalletChange.bind(this);
+    this.handleWalletChange = this.handleWalletChange.bind(this);
 
   }
   checkContractData() {
@@ -106,11 +106,11 @@ class ContractSubmitModal extends Component {
       firstPaidToken: this.state.firstPaidToken,
       secondPaidToken: this.state.secondPaidToken,
       thirdPaidToken: this.state.thirdPaidToken,
-      ProblemOwnerWallet:this.state.defaultWallet
+      ProblemOwnerWallet: this.state.defaultWallet
 
     }
-    
-    web3.eth.defaultAccount = this.state.defaultWallet;
+
+
     //console.log("my Balance",);
     let balance = parseInt(tokenAPI.myBalance());
 
@@ -135,22 +135,31 @@ class ContractSubmitModal extends Component {
   }
 
 
-  handleWalletChange(value)
-{
-  this.setState({defaultWallet:value})
-}
-  componentDidMount(){
-    let accountList=web3.eth.accounts;
+  handleWalletChange(value) {
+    this.setState({ defaultWallet: value }, () => {
+      web3.eth.defaultAccount = this.state.defaultWallet
+     let balance = parseInt(tokenAPI.myBalance().toNumber());
+      console.log(balance)
+      this.setState({ walletBalance: balance })
+    })
 
-    this.setState({walletList:accountList, defaultWallet:accountList[0]});
+
+
+  }
+  componentDidMount() {
+    let accountList = web3.eth.accounts;
+
+    this.setState({ walletList: accountList, defaultWallet: accountList[0] });
+    let balance = parseInt(tokenAPI.myBalance().toNumber());
+    this.setState({ walletBalance: balance })
   }
 
   render() {
-    let walletSelect=[];
-    if (this.state.walletList){
-        for (var wallet in this.state.walletList){
-                walletSelect.push(<Option value={this.state.walletList[wallet]}>{this.state.walletList[wallet]}</Option>)
-        }
+    let walletSelect = [];
+    if (this.state.walletList) {
+      for (var wallet in this.state.walletList) {
+        walletSelect.push(<Option value={this.state.walletList[wallet]}>{this.state.walletList[wallet]}</Option>)
+      }
     }
     return (
       <div className="ContractSubmitModal">
@@ -161,13 +170,14 @@ class ContractSubmitModal extends Component {
 
         />
           : null}
-        
-        {this.state.walletList?
+
+        {this.state.walletList ?
           <Select defaultValue={this.state.walletList[0]} onChange={this.handleWalletChange}>
-              {walletSelect}
-          </Select>    
-          :null }
-      
+            {walletSelect}
+          </Select>
+          : null}
+        {this.state.walletBalance &&
+          <Alert message={'Số dư hiện tại ' + this.state.walletBalance} type="info" />}
 
         <div>Hạn thanh toán đợt 1</div>
         <DatePicker onChange={this.set_deadline1} />

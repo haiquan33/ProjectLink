@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 
-import { Button,Select } from 'antd'
+import { Button, Select } from 'antd'
 import SignatureCanvas from 'react-signature-canvas';
 
 import { DatePicker, Alert } from 'antd';
@@ -10,6 +10,7 @@ import './ContractConfirmModal.css'
 import { __makeTemplateObject } from 'tslib';
 
 import web3 from '../../../../../../BlockChainAPI/web3'
+import { tokenAPI } from '../../../../../../BlockChainAPI/tokenAPI';
 
 
 
@@ -26,7 +27,7 @@ class ContractConfirmModal extends Component {
     this.set_deadline1 = this.set_deadline1.bind(this);
     this.set_deadline2 = this.set_deadline2.bind(this);
     this.set_deadline3 = this.set_deadline3.bind(this);
-    this.handleWalletChange=this.handleWalletChange.bind(this);
+    this.handleWalletChange = this.handleWalletChange.bind(this);
   }
 
 
@@ -66,38 +67,50 @@ class ContractConfirmModal extends Component {
     let solutionOwnerSign = this.solutionOwnerSignCanvas.toData();
 
     let temp_data = {
-      problemID:this.props.data.id, 
+      problemID: this.props.data.id,
       SolutionOwnerSign: JSON.stringify(solutionOwnerSign),
-      SolutionOwnerWallet:this.state.defaultWallet
+      SolutionOwnerWallet: this.state.defaultWallet
     }
-  
+
+    //set contract data on blockchain
+    const { data } = this.props
+    console.log(data,this.state.defaultWallet)
+    tokenAPI.setContractDetail(data.ProblemOwnerWallet,
+      this.state.defaultWallet,
+      data.id, 
+      data.deadline_1,
+      data.firstPaidToken,
+      data.deadline_2,
+      data.secondPaidToken,
+      data.deadline_3,
+      data.thirdPaidToken,
+      'xxx',{gas:3000000})
     this.props.submit_contract_confirmation(temp_data);
     this.props.closeContractConfirmModal();
-    
-   
+
+
   }
 
-  handleWalletChange(value)
-  {
-    this.setState({defaultWallet:value})
+  handleWalletChange(value) {
+    this.setState({ defaultWallet: value })
   }
 
-  componentDidMount(){
-    let ProblemOwnerSignature=JSON.parse(this.props.data.ProblemOwnerSign);
+  componentDidMount() {
+    let ProblemOwnerSignature = JSON.parse(this.props.data.ProblemOwnerSign);
     this.problemOwnerSignCanvas.fromData(ProblemOwnerSignature);
 
-    let accountList=web3.eth.accounts;
+    let accountList = web3.eth.accounts;
 
-    this.setState({walletList:accountList, defaultWallet:accountList[0]});
+    this.setState({ walletList: accountList, defaultWallet: accountList[0] });
 
   }
 
   render() {
-    let walletSelect=[];
-    if (this.state.walletList){
-        for (var wallet in this.state.walletList){
-                walletSelect.push(<Option value={this.state.walletList[wallet]}>{this.state.walletList[wallet]}</Option>)
-        }
+    let walletSelect = [];
+    if (this.state.walletList) {
+      for (var wallet in this.state.walletList) {
+        walletSelect.push(<Option value={this.state.walletList[wallet]}>{this.state.walletList[wallet]}</Option>)
+      }
     }
     return (
       <div className="ContractSubmitModal">
@@ -109,11 +122,11 @@ class ContractConfirmModal extends Component {
         />
           : null}
 
-        {this.state.walletList?
+        {this.state.walletList ?
           <Select defaultValue={this.state.walletList[0]} onChange={this.handleWalletChange}>
-              {walletSelect}
-          </Select>    
-          :null }
+            {walletSelect}
+          </Select>
+          : null}
 
         <div>Hạn thanh toán đợt 1</div>
         <DatePicker defaultValue={moment(this.props.data.deadline_1, 'DD-MM-YYYY')} onChange={this.set_deadline1} />
@@ -122,13 +135,13 @@ class ContractConfirmModal extends Component {
         <div>Hạn thanh toán đợt 3</div>
         <DatePicker defaultValue={moment(this.props.data.deadline_3, 'DD-MM-YYYY')} onChange={this.set_deadline3} />
         <div>File hợp đồng</div>
-     
+
         <div>Chữ kí bên thuê</div>
         <div style={{ border: '1px solid black' }}>
           <SignatureCanvas penColor='green'
             ref={(ref) => { this.problemOwnerSignCanvas = ref }}
             canvasProps={{ width: 500, height: 200, className: 'sigCanvas', }}
-            />
+          />
 
         </div>
         <div>Chữ kí bên thực hiện</div>
@@ -136,8 +149,8 @@ class ContractConfirmModal extends Component {
           <SignatureCanvas penColor='green'
             ref={(ref) => { this.solutionOwnerSignCanvas = ref }}
             canvasProps={{ width: 500, height: 200, className: 'sigCanvas', }}
-            />
-            
+          />
+
         </div>
         <div className="ContractModalFooter">
           <Button type="default" onClick={this.props.closeContractConfirmModal}>Close</Button>
