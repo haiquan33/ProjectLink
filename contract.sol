@@ -116,6 +116,11 @@ contract PLContractInterface{
        
     }
     mapping(string=>PLContract) ContractDetail;
+    function setDetail(string problemID) public returns (bool success) {
+         ContractDetail[problemID]=PLContract(0x77284293372ebC1e3361A40D778D70D02CdED1B2,0x77284293372ebC1e3361A40D778D70D02CdED1B2,problemID,'ss',12,'ss',13,'ss',14,'sss');
+        return true;
+    }
+    
     function setContractDetail(address problemOwnerWallet, address solutionOwnerWallet, string problemID,string deadline_1,uint paid_1,string deadline_2,uint paid_2,string deadline_3,uint paid_3,string IPFSHash) public {
          
             ContractDetail[problemID]=PLContract(problemOwnerWallet,solutionOwnerWallet,problemID,deadline_1,paid_1,deadline_2,paid_2,deadline_3,paid_3,IPFSHash);
@@ -140,6 +145,13 @@ contract PLContractInterface{
     }
     function getIPFSHash(string problemID) public constant returns(string){
             return ContractDetail[problemID].IPFSHash;
+    }
+    
+     function getProblemOwnerWallet(string problemID) public constant returns(address){
+            return ContractDetail[problemID].problemOwnerWallet;
+    }
+     function getSolutionOwnerWallet(string problemID) public constant returns(address){
+            return ContractDetail[problemID].solutionOwnerWallet;
     }
 }
 
@@ -166,7 +178,7 @@ contract ProjectLinkToken is ERC20Interface, Owned, SafeMath,PLContractInterface
         name = "ProjectLink Token";
         decimals = 18;
         _totalSupply = 100000000000000000000000000;
-        ownerAddress=0x1Fc74DF4813A55C224aDe38BD9E3d8827D80064C;
+        ownerAddress=0x9549da9FdFE7D8F6F1D24de695E573Af1972d413;
         balances[ownerAddress] = _totalSupply;
         emit Transfer(address(0),ownerAddress, _totalSupply);
     }

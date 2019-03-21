@@ -33,7 +33,14 @@
   -webkit-user-select: none;
   -ms-user-select: none;
 }
-
+.contract-deadline-show{
+  display: flex;
+  flex-direction: row;
+}
+.request-pay-button{
+  margin-left: 20px;
+  width: 30%;
+}
 .m-signature-pad--body {
   
   left: 20px;

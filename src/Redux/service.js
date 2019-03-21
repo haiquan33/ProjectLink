@@ -3,7 +3,7 @@
 import firebase_init, { auth, Authprovider, firestore } from '../firebase.js';
 
 import firebase from 'firebase'
-
+import moment from 'moment'
 import {
 
     setUserInfoAfterLogin,
@@ -15,6 +15,9 @@ import {
     set_user_wallet_address,
     set_user_company_info
 } from './Actions/actions';
+import { tokenAPI } from '../BlockChainAPI/tokenAPI.js';
+import web3 from '../BlockChainAPI/web3.js';
+
 
 
 
@@ -23,14 +26,15 @@ const Problem_Table = "Problems";
 const AccountData_Table = "AccountData";
 const Problem_Solution_Table = "ProblemSolution";
 const Problem_Contract_Table = "ProblemContract";
+const Notify_Table = "NotifyTable"
 export function loginGG() {
     return (dispatch) => {
         auth.signInWithPopup(Authprovider)
             .then((result) => {
                 const user = result.user;
                 dispatch(setUserInfoAfterLogin(user));
-              
-                
+
+
             });
 
     }
@@ -41,7 +45,7 @@ export function checkLogged_and_Login_automatically() {
         auth.onAuthStateChanged((user) => {
             if (user) {
                 dispatch(setUserInfoAfterLogin(user))
-                dispatch( getUserCompanyInfo(user.uid))
+                dispatch(getUserCompanyInfo(user.uid))
             }
         });
     }
@@ -108,6 +112,7 @@ export function add_new_problem(userInfo, problem) {
                 photoURL: userInfo.photoURL
             },
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            status: 'pending'
 
         }
         //Add to problem table
@@ -199,7 +204,10 @@ export function submit_contract_confirmation(data) {
         firestore.collection(Problem_Contract_Table).doc(data.problemID).update({
             SolutionOwnerWallet: data.SolutionOwnerWallet,
             SolutionOwnerSign: data.SolutionOwnerSign,
-            status: "accepted"
+            status: "accepted",
+            paid_1_status: 'pending',
+            paid_2_status: 'pending',
+            paid_3_status: 'pending',
 
 
 
@@ -230,6 +238,145 @@ export function get_contract_list_of_solution_owner(userID) {
     }
 }
 
+
+export function getContractByProblemID(problemID, afterAction) {
+    firestore.collection(Problem_Contract_Table).doc(problemID).get().then((doc) => {
+        if (doc.exists) {
+            afterAction.onSuccess({ ...doc.data(), id: doc.id })
+        }
+        else {
+            afterAction.onFail()
+        }
+    })
+
+}
+
+
+export function confirmPaid_1(problemID){
+    firestore.collection(Problem_Contract_Table).doc(problemID).update({
+    
+        paid_1_status: 'paid',
+   
+    })
+}
+
+export function confirmPaid_2(problemID){
+    firestore.collection(Problem_Contract_Table).doc(problemID).update({
+    
+        paid_2_status: 'paid',
+   
+
+
+    })
+
+}
+export function confirmPaid_3(problemID){
+    firestore.collection(Problem_Contract_Table).doc(problemID).update({
+    
+        paid_3_status: 'paid',
+   
+
+
+    })
+
+}
+
+
+export function payContract(problemID, order, afterAction) {
+    if (order === 1) {
+        tokenAPI.getPaid_1(problemID, (err, amount) => {
+            if (!err) {
+                const money = amount.toNumber()
+
+                //check if default wallet is the problem owner wallet
+                tokenAPI.getProblemOwnerWallet(problemID, (err, address) => {
+
+                    if (String(address).valueOf() === String(web3.eth.defaultAccount).valueOf()) {
+                        
+                        tokenAPI.getSolutionOwnerWallet(problemID,(err,receiver)=>{
+                                if (!err){
+                                        tokenAPI.pay(receiver,money,{ gas: 3000000 },(err,success)=>{
+                                            if (success){
+                                                afterAction.onSuccess()
+                                                confirmPaid_1(problemID)
+                                            }
+                                            else{
+                                                afterAction.onFail('Có lỗi xảy ra, vui lòng thử lại')
+                                            }
+                                        })
+                                }
+                        })
+
+                    }
+                    else afterAction.onFail('Đây không phải tài khoản giao dịch của hợp đồng này, xin thử lại với tài khoản có địa chỉ' + String(address).valueOf())
+                })
+            }
+            else afterAction.onFail('Có lỗi xảy ra, vui lòng thử lại')
+        })
+    }
+    if (order === 2) {
+        tokenAPI.getPaid_2(problemID, (err, amount) => {
+            if (!err) {
+                const money = amount.toNumber()
+
+                //check if default wallet is the problem owner wallet
+                tokenAPI.getProblemOwnerWallet(problemID, (err, address) => {
+
+                    if (String(address).valueOf() === String(web3.eth.defaultAccount).valueOf()) {
+                        
+                        tokenAPI.getSolutionOwnerWallet(problemID,(err,receiver)=>{
+                                if (!err){
+                                        tokenAPI.pay(receiver,money,{ gas: 3000000 },(err,success)=>{
+                                            if (success){
+                                                afterAction.onSuccess()
+                                                confirmPaid_2(problemID)
+                                            }
+                                            else{
+                                                afterAction.onFail('Có lỗi xảy ra, vui lòng thử lại')
+                                            }
+                                        })
+                                }
+                        })
+
+                    }
+                    else afterAction.onFail('Đây không phải tài khoản giao dịch của hợp đồng này, xin thử lại với tài khoản có địa chỉ' + String(address).valueOf())
+                })
+            }
+            else afterAction.onFail('Có lỗi xảy ra, vui lòng thử lại')
+        })
+    }
+    if (order === 3) {
+        tokenAPI.getPaid_3(problemID, (err, amount) => {
+            if (!err) {
+                const money = amount.toNumber()
+
+                //check if default wallet is the problem owner wallet
+                tokenAPI.getProblemOwnerWallet(problemID, (err, address) => {
+
+                    if (String(address).valueOf() === String(web3.eth.defaultAccount).valueOf()) {
+                        
+                        tokenAPI.getSolutionOwnerWallet(problemID,(err,receiver)=>{
+                                if (!err){
+                                        tokenAPI.pay(receiver,money,{ gas: 3000000 },(err,success)=>{
+                                            if (success){
+                                                afterAction.onSuccess()
+                                                confirmPaid_3(problemID)
+                                            }
+                                            else{
+                                                afterAction.onFail('Có lỗi xảy ra, vui lòng thử lại')
+                                            }
+                                        })
+                                }
+                        })
+
+                    }
+                    else afterAction.onFail('Đây không phải tài khoản giao dịch của hợp đồng này, xin thử lại với tài khoản có địa chỉ' + String(address).valueOf())
+                })
+            }
+            else afterAction.onFail('Có lỗi xảy ra, vui lòng thử lại')
+        })
+    }
+}
 
 //đăng nhập bình thường, không thông qua GG hay FB
 // export function SignIn_manually(userInfo) {
@@ -335,8 +482,8 @@ export function getUserWalletAdress(userID) {
     }
 }
 
-export function saveUserCompanyInfo(data,userId){
-    return (dispatch)=>{
+export function saveUserCompanyInfo(data, userId) {
+    return (dispatch) => {
         firestore.collection(AccountData_Table).doc(userId).set({
             companyInfo: data
         })
@@ -354,16 +501,42 @@ export function getUserCompanyInfo(userId) {
     }
 }
 
-export function getUserCompanyInfoForViewing(userId,callback) {
-        console.log(userId)
-        firestore.collection(AccountData_Table).doc(userId).get().then((doc) => {
-            if (doc.exists) {
-                let companyInfo = doc.data().companyInfo;
-                callback(companyInfo)
+export function getUserCompanyInfoForViewing(userId, callback) {
+    console.log(userId)
+    firestore.collection(AccountData_Table).doc(userId).get().then((doc) => {
+        if (doc.exists) {
+            let companyInfo = doc.data().companyInfo;
+            callback(companyInfo)
+        }
+    })
+
+}
+
+export function requestPay(problemID, order, afterAction) {
+    let deadline
+    if (order === 1) {
+        tokenAPI.getDeadline_1(problemID, (err, res) => {
+            if (!err) {
+
+                //if the current date was pass the deadline day
+                if (moment(moment().format()).isAfter(res)) {
+
+                    firestore.collection(Problem_Contract_Table).doc(problemID).update({
+
+                        paid_1_status: 'requesting',
+
+                    })
+                    afterAction.onSuccess()
+                }
+                else {
+                    afterAction.onFail()
+                }
             }
         })
-    
+    }
+
 }
+
 
 //ssignout user
 export function SignOutGG() {

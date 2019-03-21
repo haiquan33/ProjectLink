@@ -4,13 +4,14 @@ import moment from 'moment';
 import { Button, Select } from 'antd'
 import SignatureCanvas from 'react-signature-canvas';
 
-import { DatePicker, Alert } from 'antd';
+import { DatePicker, Alert, notification } from 'antd';
 
 import './ContractConfirmModal.css'
 import { __makeTemplateObject } from 'tslib';
 
 import web3 from '../../../../../../BlockChainAPI/web3'
 import { tokenAPI } from '../../../../../../BlockChainAPI/tokenAPI';
+import { requestPay } from '../../../../../../Redux/service';
 
 
 
@@ -74,17 +75,17 @@ class ContractConfirmModal extends Component {
 
     //set contract data on blockchain
     const { data } = this.props
-    console.log(data,this.state.defaultWallet)
+    console.log(data, this.state.defaultWallet)
     tokenAPI.setContractDetail(data.ProblemOwnerWallet,
       this.state.defaultWallet,
-      data.id, 
+      data.id,
       data.deadline_1,
       data.firstPaidToken,
       data.deadline_2,
       data.secondPaidToken,
       data.deadline_3,
       data.thirdPaidToken,
-      'xxx',{gas:3000000})
+      'xxx', { gas: 3000000 })
     this.props.submit_contract_confirmation(temp_data);
     this.props.closeContractConfirmModal();
 
@@ -99,19 +100,54 @@ class ContractConfirmModal extends Component {
     let ProblemOwnerSignature = JSON.parse(this.props.data.ProblemOwnerSign);
     this.problemOwnerSignCanvas.fromData(ProblemOwnerSignature);
 
+
+    if (this.props.data.SolutionOwnerSign) {
+      let SolutionOwnerSign = JSON.parse(this.props.data.SolutionOwnerSign)
+      this.solutionOwnerSignCanvas.fromData(SolutionOwnerSign)
+    }
+
+
+    if (this.props.data.status === 'accepted') {
+      this.problemOwnerSignCanvas.off()
+      this.solutionOwnerSignCanvas.off()
+
+    }
+
     let accountList = web3.eth.accounts;
 
     this.setState({ walletList: accountList, defaultWallet: accountList[0] });
 
   }
 
+
+  openNotification = (content) => {
+    notification.open({
+      message: 'Thông báo',
+      description: content,
+      onClick: () => {
+        console.log('Notification Clicked!');
+      },
+    });
+  }
+
+
+  sendPayRequest = (order) => {
+        const afterAction={
+          onSuccess:()=>this.openNotification('Yêu cầu thanh toán của bạn đã được gửi đi'),
+          onFail:()=>this.openNotification('Hiện chưa tới deadline của hợp đồng, vui lòng thử lại sau')
+        }
+        requestPay(this.props.data.id,order,afterAction)
+  }
+
   render() {
     let walletSelect = [];
+    let contractEditable = this.props.data.status === 'accepted' ? false : true
     if (this.state.walletList) {
       for (var wallet in this.state.walletList) {
         walletSelect.push(<Option value={this.state.walletList[wallet]}>{this.state.walletList[wallet]}</Option>)
       }
     }
+    console.log(contractEditable)
     return (
       <div className="ContractSubmitModal">
         {this.state.alert ? <Alert
@@ -123,17 +159,29 @@ class ContractConfirmModal extends Component {
           : null}
 
         {this.state.walletList ?
-          <Select defaultValue={this.state.walletList[0]} onChange={this.handleWalletChange}>
+          <Select disabled={!contractEditable} defaultValue={this.props.data.SolutionOwnerWallet ? this.props.data.SolutionOwnerWallet : this.state.walletList[0]} onChange={this.handleWalletChange}>
             {walletSelect}
           </Select>
           : null}
 
         <div>Hạn thanh toán đợt 1</div>
-        <DatePicker defaultValue={moment(this.props.data.deadline_1, 'DD-MM-YYYY')} onChange={this.set_deadline1} />
+        <div className="contract-deadline-show">
+          <DatePicker disabled={!contractEditable} defaultValue={moment(this.props.data.deadline_1, 'DD-MM-YYYY')} onChange={this.set_deadline1} />
+          <Button className="request-pay-button" type="primary" onClick={()=>this.sendPayRequest(1)} >Yêu cầu thanh toán</Button>
+        </div>
+
         <div>Hạn thanh toán đợt 2</div>
-        <DatePicker defaultValue={moment(this.props.data.deadline_2, 'DD-MM-YYYY')} onChange={this.set_deadline2} />
+        <div className="contract-deadline-show">
+          <DatePicker disabled={!contractEditable} defaultValue={moment(this.props.data.deadline_2, 'DD-MM-YYYY')} onChange={this.set_deadline2} />
+          <Button className="request-pay-button" type="primary" onClick={()=>this.sendPayRequest(2)} > Yêu cầu thanh toán</Button>
+        </div>
+
         <div>Hạn thanh toán đợt 3</div>
-        <DatePicker defaultValue={moment(this.props.data.deadline_3, 'DD-MM-YYYY')} onChange={this.set_deadline3} />
+        <div className="contract-deadline-show">
+          <DatePicker disabled={!contractEditable} defaultValue={moment(this.props.data.deadline_3, 'DD-MM-YYYY')} onChange={this.set_deadline3} />
+          <Button className="request-pay-button" type="primary" onClick={()=>this.sendPayRequest(3)} > Yêu cầu thanh toán</Button>
+        </div>
+
         <div>File hợp đồng</div>
 
         <div>Chữ kí bên thuê</div>
@@ -154,7 +202,8 @@ class ContractConfirmModal extends Component {
         </div>
         <div className="ContractModalFooter">
           <Button type="default" onClick={this.props.closeContractConfirmModal}>Close</Button>
-          <Button type="primary" onClick={this.submit}>Gửi</Button>
+          {contractEditable ? <Button type="primary" onClick={this.submit}>Gửi</Button> : null
+          }
         </div>
       </div>
     );

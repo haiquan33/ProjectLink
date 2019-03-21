@@ -1,7 +1,7 @@
 import web3 from './web3';
 //access our local copy to contract deployed on rinkeby testnet
 //use your own contract address
-const address = '0xa0843a71e3fed2107b4ba6f7ed294dd626b49f59';
+const address = '0xbdf1e6bbb416e6c8f65d22878001ab437fda4aae';
 //use the ABI from your contract
 const abi =[
 	{
@@ -549,6 +549,44 @@ const abi =[
 			{
 				"name": "",
 				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "problemID",
+				"type": "string"
+			}
+		],
+		"name": "getProblemOwnerWallet",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "problemID",
+				"type": "string"
+			}
+		],
+		"name": "getSolutionOwnerWallet",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
 			}
 		],
 		"payable": false,
