@@ -63,7 +63,7 @@ class Header extends Component {
         return (
       <Layout.Header>
                      <a  href="/"> PROJECTLINK</a>
-                    <Icon type="search" />
+               
                     {
                         this.props.userInfo?
                         //check whether render menu for school client or problem owner

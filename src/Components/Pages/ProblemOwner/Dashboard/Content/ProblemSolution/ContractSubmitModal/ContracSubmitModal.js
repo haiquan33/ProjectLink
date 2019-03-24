@@ -112,21 +112,21 @@ class ContractSubmitModal extends Component {
 
 
     //console.log("my Balance",);
-    let balance = parseInt(tokenAPI.myBalance());
+    // let balance = parseInt(tokenAPI.myBalance());
 
 
-    if (balance < this.state.firstPaidToken) {
+    // if (balance < this.state.firstPaidToken) {
 
-      this.setState({ alertError: "Không đủ số dư thực hiện!  Số dư hiện tại: " + balance, alert: true });
-      return;
-    }
+    //   this.setState({ alertError: "Không đủ số dư thực hiện!  Số dư hiện tại: " + balance, alert: true });
+    //   return;
+    // }
 
     if (this.checkContractData()) {
       this.props.submit_contract(temp_data);
       this.props.closeContractSubmitModal();
 
       //lock token 
-      tokenAPI.lockBalance(this.state.firstPaidToken)
+     // tokenAPI.lockBalance(this.state.firstPaidToken)
 
     }
     else {

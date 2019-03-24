@@ -54,7 +54,7 @@ class ContractListContainer extends Component {
 
 
     render() {
-
+        console.log(this.props.resultContractList)
         return (
             <div>
                 <ContractList submit_contract_confirmation={this.props.submit_contract_confirmation} data={this.props.resultContractList} match={this.props.match} />        

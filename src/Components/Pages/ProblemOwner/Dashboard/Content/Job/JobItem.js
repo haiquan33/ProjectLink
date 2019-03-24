@@ -13,6 +13,7 @@ import moment from 'moment';
 import { Route, Link } from 'react-router-dom'
 import { getContractByProblemID, payContract } from '../../../../../../Redux/service';
 import web3 from '../../../../../../BlockChainAPI/web3';
+import { tokenAPI } from '../../../../../../BlockChainAPI/tokenAPI';
 const { Meta } = Card;
 const Option = Select.Option;
 
@@ -82,6 +83,29 @@ export default class JobItem extends Component {
         payContract(problemID, order, afterAction)
     }
 
+
+    activeDeadline = (problemID, order, token) => {
+        let balance = parseInt(tokenAPI.myBalance());
+
+
+        if (balance < token) {
+
+            this.openNotification("Không đủ số dư thực hiện!  Số dư hiện tại: " + balance)
+            return;
+        }
+        tokenAPI.lockBalance(this.state.firstPaidToken, { gas: 3000000 }, (err, success) => {
+            if (!err) {
+                this.openNotification('Đã gửi yêu cầu bắt đầu giai đoạn ', order)
+                
+            }
+            else {
+                this.openNotification('Có lỗi đã xảy ra, vui lòng thử lại', err)
+            }
+
+        })
+
+    }
+
     renderContractDetailModal = () => {
         const { contractData } = this.state
         if (!contractData) return null
@@ -102,7 +126,9 @@ export default class JobItem extends Component {
 
             <div>Hạn thanh toán đợt 1</div>
             <div className="contract-deadline-show">
-                <DatePicker disabled defaultValue={moment(contractData.deadline_1, 'DD-MM-YYYY')} />
+                <DatePicker disabled defaultValue={moment(contractData.deadline_1, 'YYYY-MM-DD')} />
+                {contractData.paid_1_status === 'pending' &&
+                    <Button className="request-pay-button" type="primary" onClick={() => this.activeDeadline(contractData.id, 1, contractData.firstPaidToken)} >Tiến hành</Button>}
                 {contractData.paid_1_status === 'requesting' &&
                     <Button className="request-pay-button" type="primary" onClick={() => this.activePayContract(contractData.id, 1)} >Thanh toán</Button>}
                 {contractData.paid_1_status === 'paid' &&
@@ -111,7 +137,9 @@ export default class JobItem extends Component {
 
             <div>Hạn thanh toán đợt 2</div>
             <div className="contract-deadline-show">
-                <DatePicker disabled defaultValue={moment(contractData.deadline_2, 'DD-MM-YYYY')} />
+                <DatePicker disabled defaultValue={moment(contractData.deadline_2, 'YYYY-MM-DD')} />
+                {contractData.paid_1_status === 'paid' && contractData.paid_2_status === 'pending' &&
+                    <Button className="request-pay-button" type="primary" onClick={() => this.activeDeadline(contractData.id, 2, contractData.secondPaidToken)} >Tiến hành</Button>}
                 {contractData.paid_2_status === 'requesting' &&
                     <Button className="request-pay-button" type="primary" onClick={() => this.activePayContract(contractData.id, 2)} >Thanh toán</Button>}
                 {contractData.paid_2_status === 'paid' &&
@@ -120,7 +148,9 @@ export default class JobItem extends Component {
 
             <div>Hạn thanh toán đợt 3</div>
             <div className="contract-deadline-show">
-                <DatePicker disabled defaultValue={moment(contractData.deadline_3, 'DD-MM-YYYY')} />
+                <DatePicker disabled defaultValue={moment(contractData.deadline_3, 'YYYY-MM-DD')} />
+                {contractData.paid_2_status === 'paid' && contractData.paid_3_status === 'pending' &&
+                    <Button className="request-pay-button" type="primary" onClick={() => this.activeDeadline(contractData.id, 2, contractData.secondPaidToken)} >Tiến hành</Button>}
                 {contractData.paid_3_status === 'requesting' &&
                     <Button className="request-pay-button" type="primary" onClick={() => this.activePayContract(contractData.id, 3)} >Thanh toán</Button>}
                 {contractData.paid_3_status === 'paid' &&
@@ -146,7 +176,8 @@ export default class JobItem extends Component {
                     <Menu.Item key="solution"><Icon type="solution" /> <Link to={`${this.props.match.url}/` + this.props.data.id + '/solutions'}>Các giải pháp đã nhận cho vị trí này</Link> </Menu.Item>}
                 {this.props.data.status === 'doing' &&
                     <Menu.Item key="viewContract"><Icon type="solution" />Xem lại hợp đồng</Menu.Item>}
-
+                {this.props.data.status === 'accepted' &&
+                    <Menu.Item key="viewContract"><Icon type="solution" />Xem lại hợp đồng</Menu.Item>}
                 <Menu.Item key="delete"><Icon type="delete" /> Xoá</Menu.Item>
             </Menu>
         );

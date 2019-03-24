@@ -161,7 +161,7 @@ export function get_solution_list(problemID) {
                 var item = doc.data();
                 item = { ...item, id: doc.id }
                 list.push(item);
-
+                console.log('list', item)
             });
 
             if (list.length >= 1)
@@ -212,6 +212,14 @@ export function submit_contract_confirmation(data) {
 
 
         })
+
+        firestore.collection(Problem_Table).doc(data.problemID).update({
+
+            status: "accepted",
+
+
+
+        })
     }
 }
 
@@ -252,29 +260,29 @@ export function getContractByProblemID(problemID, afterAction) {
 }
 
 
-export function confirmPaid_1(problemID){
+export function confirmPaid_1(problemID) {
     firestore.collection(Problem_Contract_Table).doc(problemID).update({
-    
+
         paid_1_status: 'paid',
-   
+
     })
 }
 
-export function confirmPaid_2(problemID){
+export function confirmPaid_2(problemID) {
     firestore.collection(Problem_Contract_Table).doc(problemID).update({
-    
+
         paid_2_status: 'paid',
-   
+
 
 
     })
 
 }
-export function confirmPaid_3(problemID){
+export function confirmPaid_3(problemID) {
     firestore.collection(Problem_Contract_Table).doc(problemID).update({
-    
+
         paid_3_status: 'paid',
-   
+
 
 
     })
@@ -292,19 +300,19 @@ export function payContract(problemID, order, afterAction) {
                 tokenAPI.getProblemOwnerWallet(problemID, (err, address) => {
 
                     if (String(address).valueOf() === String(web3.eth.defaultAccount).valueOf()) {
-                        
-                        tokenAPI.getSolutionOwnerWallet(problemID,(err,receiver)=>{
-                                if (!err){
-                                        tokenAPI.pay(receiver,money,{ gas: 3000000 },(err,success)=>{
-                                            if (success){
-                                                afterAction.onSuccess()
-                                                confirmPaid_1(problemID)
-                                            }
-                                            else{
-                                                afterAction.onFail('Có lỗi xảy ra, vui lòng thử lại')
-                                            }
-                                        })
-                                }
+
+                        tokenAPI.getSolutionOwnerWallet(problemID, (err, receiver) => {
+                            if (!err) {
+                                tokenAPI.pay(receiver, money, { gas: 3000000 }, (err, success) => {
+                                    if (success) {
+                                        afterAction.onSuccess()
+                                        confirmPaid_1(problemID)
+                                    }
+                                    else {
+                                        afterAction.onFail('Có lỗi xảy ra, vui lòng thử lại')
+                                    }
+                                })
+                            }
                         })
 
                     }
@@ -323,19 +331,19 @@ export function payContract(problemID, order, afterAction) {
                 tokenAPI.getProblemOwnerWallet(problemID, (err, address) => {
 
                     if (String(address).valueOf() === String(web3.eth.defaultAccount).valueOf()) {
-                        
-                        tokenAPI.getSolutionOwnerWallet(problemID,(err,receiver)=>{
-                                if (!err){
-                                        tokenAPI.pay(receiver,money,{ gas: 3000000 },(err,success)=>{
-                                            if (success){
-                                                afterAction.onSuccess()
-                                                confirmPaid_2(problemID)
-                                            }
-                                            else{
-                                                afterAction.onFail('Có lỗi xảy ra, vui lòng thử lại')
-                                            }
-                                        })
-                                }
+
+                        tokenAPI.getSolutionOwnerWallet(problemID, (err, receiver) => {
+                            if (!err) {
+                                tokenAPI.pay(receiver, money, { gas: 3000000 }, (err, success) => {
+                                    if (success) {
+                                        afterAction.onSuccess()
+                                        confirmPaid_2(problemID)
+                                    }
+                                    else {
+                                        afterAction.onFail('Có lỗi xảy ra, vui lòng thử lại')
+                                    }
+                                })
+                            }
                         })
 
                     }
@@ -354,19 +362,19 @@ export function payContract(problemID, order, afterAction) {
                 tokenAPI.getProblemOwnerWallet(problemID, (err, address) => {
 
                     if (String(address).valueOf() === String(web3.eth.defaultAccount).valueOf()) {
-                        
-                        tokenAPI.getSolutionOwnerWallet(problemID,(err,receiver)=>{
-                                if (!err){
-                                        tokenAPI.pay(receiver,money,{ gas: 3000000 },(err,success)=>{
-                                            if (success){
-                                                afterAction.onSuccess()
-                                                confirmPaid_3(problemID)
-                                            }
-                                            else{
-                                                afterAction.onFail('Có lỗi xảy ra, vui lòng thử lại')
-                                            }
-                                        })
-                                }
+
+                        tokenAPI.getSolutionOwnerWallet(problemID, (err, receiver) => {
+                            if (!err) {
+                                tokenAPI.pay(receiver, money, { gas: 3000000 }, (err, success) => {
+                                    if (success) {
+                                        afterAction.onSuccess()
+                                        confirmPaid_3(problemID)
+                                    }
+                                    else {
+                                        afterAction.onFail('Có lỗi xảy ra, vui lòng thử lại')
+                                    }
+                                })
+                            }
                         })
 
                     }
@@ -377,6 +385,7 @@ export function payContract(problemID, order, afterAction) {
         })
     }
 }
+
 
 //đăng nhập bình thường, không thông qua GG hay FB
 // export function SignIn_manually(userInfo) {
@@ -524,6 +533,46 @@ export function requestPay(problemID, order, afterAction) {
                     firestore.collection(Problem_Contract_Table).doc(problemID).update({
 
                         paid_1_status: 'requesting',
+
+                    })
+                    afterAction.onSuccess()
+                }
+                else {
+                    afterAction.onFail()
+                }
+            }
+        })
+    }
+    if (order === 2) {
+        tokenAPI.getDeadline_2(problemID, (err, res) => {
+            if (!err) {
+
+                //if the current date was pass the deadline day
+                if (moment(moment().format()).isAfter(res)) {
+
+                    firestore.collection(Problem_Contract_Table).doc(problemID).update({
+
+                        paid_2_status: 'requesting',
+
+                    })
+                    afterAction.onSuccess()
+                }
+                else {
+                    afterAction.onFail()
+                }
+            }
+        })
+    }
+    if (order === 3) {
+        tokenAPI.getDeadline_3(problemID, (err, res) => {
+            if (!err) {
+
+                //if the current date was pass the deadline day
+                if (moment(moment().format()).isAfter(res)) {
+
+                    firestore.collection(Problem_Contract_Table).doc(problemID).update({
+
+                        paid_3_status: 'requesting',
 
                     })
                     afterAction.onSuccess()

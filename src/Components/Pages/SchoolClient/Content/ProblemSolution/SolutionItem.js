@@ -47,6 +47,7 @@ export default class SolutionItem extends Component {
     }
 
     render() {
+        
         const menu = (
             <Menu onClick={this.handleMenuItemClick}>
 

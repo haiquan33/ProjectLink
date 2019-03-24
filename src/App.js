@@ -21,6 +21,7 @@ import { UserInfoViewModal } from './Components/Components/Common/UserInfoViewMo
 
 //Redux component
 import { connect } from 'react-redux'
+import ContractSignPage from './Components/Pages/ContractSignPage/ContractSignPage';
 
 
 
@@ -92,7 +93,7 @@ class App extends Component {
               <Route path='/dashboard' component={DashboardContainer} />
               <Route path='/schooldashboard' component={SchoolDashboardContainer} />
               <Route path='/problem/:problemid' component={ProblemViewPage} />
-
+              <Route path='/test' component={ContractSignPage}/>
               <Redirect to="/404" />
             </Switch>
           </Layout.Content>

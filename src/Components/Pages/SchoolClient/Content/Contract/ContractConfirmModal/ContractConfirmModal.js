@@ -132,14 +132,15 @@ class ContractConfirmModal extends Component {
 
 
   sendPayRequest = (order) => {
-        const afterAction={
-          onSuccess:()=>this.openNotification('Yêu cầu thanh toán của bạn đã được gửi đi'),
-          onFail:()=>this.openNotification('Hiện chưa tới deadline của hợp đồng, vui lòng thử lại sau')
-        }
-        requestPay(this.props.data.id,order,afterAction)
+    const afterAction = {
+      onSuccess: () => this.openNotification('Yêu cầu thanh toán của bạn đã được gửi đi'),
+      onFail: () => this.openNotification('Hiện chưa tới deadline của hợp đồng, vui lòng thử lại sau')
+    }
+    requestPay(this.props.data.id, order, afterAction)
   }
 
   render() {
+    console.log(this.props.data)
     let walletSelect = [];
     let contractEditable = this.props.data.status === 'accepted' ? false : true
     if (this.state.walletList) {
@@ -166,20 +167,29 @@ class ContractConfirmModal extends Component {
 
         <div>Hạn thanh toán đợt 1</div>
         <div className="contract-deadline-show">
-          <DatePicker disabled={!contractEditable} defaultValue={moment(this.props.data.deadline_1, 'DD-MM-YYYY')} onChange={this.set_deadline1} />
-          <Button className="request-pay-button" type="primary" onClick={()=>this.sendPayRequest(1)} >Yêu cầu thanh toán</Button>
+          <DatePicker disabled={!contractEditable} defaultValue={moment(this.props.data.deadline_1, 'YYYY-MM-DD')} onChange={this.set_deadline1} />
+          {this.props.data.status === 'accepted' && this.props.data.paid_1_status === 'pending' &&
+            <Button className="request-pay-button" type="primary" onClick={() => this.sendPayRequest(1)} >Yêu cầu thanh toán</Button>}
+          {this.props.data.paid_1_status === 'paid' &&
+            <Button className="request-pay-button" type="primary" >Đã thanh toán</Button>}
         </div>
 
         <div>Hạn thanh toán đợt 2</div>
         <div className="contract-deadline-show">
-          <DatePicker disabled={!contractEditable} defaultValue={moment(this.props.data.deadline_2, 'DD-MM-YYYY')} onChange={this.set_deadline2} />
-          <Button className="request-pay-button" type="primary" onClick={()=>this.sendPayRequest(2)} > Yêu cầu thanh toán</Button>
+          <DatePicker disabled={!contractEditable} defaultValue={moment(this.props.data.deadline_2, 'YYYY-MM-DD')} onChange={this.set_deadline2} />
+          {this.props.data.status === 'accepted' && this.props.data.paid_2_status === 'pending' &&
+            <Button className="request-pay-button" type="primary" onClick={() => this.sendPayRequest(2)} >Yêu cầu thanh toán</Button>}
+          {this.props.data.paid_2_status === 'paid' &&
+            <Button className="request-pay-button" type="primary" >Đã thanh toán</Button>}
         </div>
 
         <div>Hạn thanh toán đợt 3</div>
         <div className="contract-deadline-show">
-          <DatePicker disabled={!contractEditable} defaultValue={moment(this.props.data.deadline_3, 'DD-MM-YYYY')} onChange={this.set_deadline3} />
-          <Button className="request-pay-button" type="primary" onClick={()=>this.sendPayRequest(3)} > Yêu cầu thanh toán</Button>
+          <DatePicker disabled={!contractEditable} defaultValue={moment(this.props.data.deadline_3, 'YYYY-MM-DD')} onChange={this.set_deadline3} />
+          {this.props.data.status === 'accepted' && this.props.data.paid_3_status === 'pending' &&
+            <Button className="request-pay-button" type="primary" onClick={() => this.sendPayRequest(3)} >Yêu cầu thanh toán</Button>}
+          {this.props.data.paid_3_status === 'paid' &&
+            <Button className="request-pay-button" type="primary" >Đã thanh toán</Button>}
         </div>
 
         <div>File hợp đồng</div>
