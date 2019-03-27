@@ -18,7 +18,7 @@ export const SIGNOUT="SIGNOUT";
 export const START_GETTING_USER_INFO_AFTER_LOGIN="START_GETTING_USER_INFO_AFTER_LOGIN";
 export const SET_USER_INFO_AFTER_LOGIN="SET_USER_INFO_AFTER_LOGIN";
 
-
+export const SET_NOTIFICATION_LIST="SET_NOTIFICATION_LIST"
 
 ////////////////////////////////////////
 
@@ -165,6 +165,13 @@ export function set_result_problem_list(list){
     return {
         type: SET_RESULT_PROBLEM_LIST,
         resultProblemList:list
+    }
+}
+
+export function set_notification_list(list){
+    return{
+        type: SET_NOTIFICATION_LIST,
+        notificationList:list
     }
 }
 

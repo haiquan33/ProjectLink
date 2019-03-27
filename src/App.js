@@ -85,7 +85,7 @@ class App extends Component {
 
         <Layout>
 
-          <Header userInfo={this.props.userInfo} openProblemOwnerNotificationModal={this.openProblemOwnerNotificationModal} />
+          <Header notificationList={this.props.notificationList} userInfo={this.props.userInfo} openProblemOwnerNotificationModal={this.openProblemOwnerNotificationModal} />
           <Layout.Content>
 
             <Switch>
@@ -106,7 +106,7 @@ class App extends Component {
 function mapState2Props(state) {
   return {
     userInfo: state.accountReducer.userInfo,
-
+    notificationList:state.accountReducer.notificationList
 
   };
 }

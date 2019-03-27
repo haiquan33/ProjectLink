@@ -3,16 +3,15 @@ import { Upload, Button } from 'antd'
 import SignatureCanvas from 'react-signature-canvas';
 import firebase_init from '../../../../../../../firebase'
 import FileUploader from "react-firebase-file-uploader";
-import { DatePicker, Alert, Select } from 'antd';
+import { DatePicker, Alert, Select, Progress } from 'antd';
 import NumericInputDemo from '../../../../../../Components/Common/NumericInput'
 
 import './ContractSubmitModal.css'
-import { __makeTemplateObject } from 'tslib';
+
 
 import { tokenAPI } from '../../../../../../../BlockChainAPI/tokenAPI'
 import web3 from '../../../../../../../BlockChainAPI/web3'
-import { tempConst } from '../../../../../../../TempConst';
-import { userInfo } from 'os';
+import IPFSUploader from '../../../../../ContractSignPage/IPFSUploader';
 
 
 
@@ -26,6 +25,10 @@ class ContractSubmitModal extends Component {
       firstPaidToken: null,
       secondPaidToken: null,
       thirdPaidToken: null,
+      isFileUploading: false,
+      uploadPercent: 0,
+      resHash: null,
+      isShowUploadHash: false
     };
     this.submit = this.submit.bind(this);
     this.set_deadline1 = this.set_deadline1.bind(this);
@@ -40,7 +43,7 @@ class ContractSubmitModal extends Component {
 
   }
   checkContractData() {
-    if (!this.state.fileurl) return false;
+    if (!this.state.resHash) return false;
     if (!this.state.firstPaidToken) return false;
     if (!this.state.secondPaidToken) return false;
     if (!this.state.thirdPaidToken) return false;
@@ -93,7 +96,6 @@ class ContractSubmitModal extends Component {
     let ProblemOwnerSign = this.sigCanvas.toData();
     let temp_data = {
       problemID: this.props.problemID,
-      ContractFilename: this.state.ContractFilename,
       ProblemOwnerID: this.props.ProblemOwnerID,
       ProblemOwnerSign: JSON.stringify(ProblemOwnerSign),
 
@@ -106,7 +108,8 @@ class ContractSubmitModal extends Component {
       firstPaidToken: this.state.firstPaidToken,
       secondPaidToken: this.state.secondPaidToken,
       thirdPaidToken: this.state.thirdPaidToken,
-      ProblemOwnerWallet: this.state.defaultWallet
+      ProblemOwnerWallet: this.state.defaultWallet,
+      IPFSHash: this.state.resHash
 
     }
 
@@ -126,7 +129,7 @@ class ContractSubmitModal extends Component {
       this.props.closeContractSubmitModal();
 
       //lock token 
-     // tokenAPI.lockBalance(this.state.firstPaidToken)
+      // tokenAPI.lockBalance(this.state.firstPaidToken)
 
     }
     else {
@@ -138,7 +141,7 @@ class ContractSubmitModal extends Component {
   handleWalletChange(value) {
     this.setState({ defaultWallet: value }, () => {
       web3.eth.defaultAccount = this.state.defaultWallet
-     let balance = parseInt(tokenAPI.myBalance().toNumber());
+      let balance = parseInt(tokenAPI.myBalance().toNumber());
       console.log(balance)
       this.setState({ walletBalance: balance })
     })
@@ -152,6 +155,17 @@ class ContractSubmitModal extends Component {
     this.setState({ walletList: accountList, defaultWallet: accountList[0] });
     let balance = parseInt(tokenAPI.myBalance().toNumber());
     this.setState({ walletBalance: balance })
+  }
+
+  onStartUploadFile = () => {
+    this.setState({ isFileUploading: true, isShowUploadHash: false })
+  }
+
+  onProgressUploadFile = (byte, totalSize) => {
+    this.setState({ uploadPercent: byte / totalSize })
+  }
+  onFinishUploadFile = (res) => {
+    this.setState({ isFileUploading: false, resHash: res[0].hash, isShowUploadHash: true })
   }
 
   render() {
@@ -188,17 +202,15 @@ class ContractSubmitModal extends Component {
         <div>Hạn thanh toán đợt 3</div>
         <DatePicker onChange={this.set_deadline3} />
         <NumericInputDemo value={this.state.thirdPaidToken} onChange={this.onThirdPaidTokenChange} placeholder="Nhập số tiền thanh toán đợt này" />
+
         <div>File hợp đồng</div>
-        <FileUploader
-          accept="image/*"
-          name="avatar"
-          randomizeFilename
-          storageRef={firebase_init.storage().ref("contracts")}
-          onUploadStart={this.handleUploadStart}
-          onUploadError={this.handleUploadError}
-          onUploadSuccess={this.handleUploadSuccess}
-          onProgress={this.handleProgress}
-        />
+        <IPFSUploader onStart={this.onStartUploadFile} onFinish={this.onFinishUploadFile} onProgress={this.onProgressUploadFile} />
+        {this.state.isFileUploading &&
+          <Progress percent={this.state.uploadPercent} />}
+        {this.state.isShowUploadHash &&
+          <a onClick={() => window.open('http://localhost:8080/ipfs/' + this.state.resHash, '_blank')}><Alert message={'File hash: ' + this.state.resHash} type="info" /></a>}
+
+
         <div>Chữ kí bên thuê</div>
         <div style={{ border: '1px solid black' }}>
           <SignatureCanvas penColor='green'
@@ -209,7 +221,7 @@ class ContractSubmitModal extends Component {
           <Button type="default" onClick={this.props.closeContractSubmitModal}>Close</Button>
           <Button type="primary" onClick={this.submit}>Gửi</Button>
         </div>
-      </div>
+      </div >
     );
   }
 }

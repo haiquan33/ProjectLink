@@ -22,7 +22,8 @@ class ContractConfirmModal extends Component {
     super(props);
     this.state = {
       alertError: "",
-      alert: false
+      alert: false,
+      IPFSHash: null
     };
     this.submit = this.submit.bind(this);
     this.set_deadline1 = this.set_deadline1.bind(this);
@@ -85,7 +86,7 @@ class ContractConfirmModal extends Component {
       data.secondPaidToken,
       data.deadline_3,
       data.thirdPaidToken,
-      'xxx', { gas: 3000000 })
+      data.IPFSHash, { gas: 3000000 })
     this.props.submit_contract_confirmation(temp_data);
     this.props.closeContractConfirmModal();
 
@@ -117,6 +118,13 @@ class ContractConfirmModal extends Component {
 
     this.setState({ walletList: accountList, defaultWallet: accountList[0] });
 
+
+    //get ipfshash from blockchain
+    tokenAPI.getIPFSHash(this.props.data.id, (err, hash) => {
+      if (!err) {
+        this.setState({ IPFSHash: hash })
+      }
+    })
   }
 
 
@@ -168,7 +176,7 @@ class ContractConfirmModal extends Component {
         <div>Hạn thanh toán đợt 1</div>
         <div className="contract-deadline-show">
           <DatePicker disabled={!contractEditable} defaultValue={moment(this.props.data.deadline_1, 'YYYY-MM-DD')} onChange={this.set_deadline1} />
-          {this.props.data.status === 'accepted' && this.props.data.paid_1_status === 'pending' &&
+          {this.props.data.status === 'accepted' && this.props.data.paid_1_status === 'activated' &&
             <Button className="request-pay-button" type="primary" onClick={() => this.sendPayRequest(1)} >Yêu cầu thanh toán</Button>}
           {this.props.data.paid_1_status === 'paid' &&
             <Button className="request-pay-button" type="primary" >Đã thanh toán</Button>}
@@ -177,7 +185,7 @@ class ContractConfirmModal extends Component {
         <div>Hạn thanh toán đợt 2</div>
         <div className="contract-deadline-show">
           <DatePicker disabled={!contractEditable} defaultValue={moment(this.props.data.deadline_2, 'YYYY-MM-DD')} onChange={this.set_deadline2} />
-          {this.props.data.status === 'accepted' && this.props.data.paid_2_status === 'pending' &&
+          {this.props.data.status === 'accepted' && this.props.data.paid_2_status === 'activated' &&
             <Button className="request-pay-button" type="primary" onClick={() => this.sendPayRequest(2)} >Yêu cầu thanh toán</Button>}
           {this.props.data.paid_2_status === 'paid' &&
             <Button className="request-pay-button" type="primary" >Đã thanh toán</Button>}
@@ -186,13 +194,18 @@ class ContractConfirmModal extends Component {
         <div>Hạn thanh toán đợt 3</div>
         <div className="contract-deadline-show">
           <DatePicker disabled={!contractEditable} defaultValue={moment(this.props.data.deadline_3, 'YYYY-MM-DD')} onChange={this.set_deadline3} />
-          {this.props.data.status === 'accepted' && this.props.data.paid_3_status === 'pending' &&
+          {this.props.data.status === 'accepted' && this.props.data.paid_3_status === 'activated' &&
             <Button className="request-pay-button" type="primary" onClick={() => this.sendPayRequest(3)} >Yêu cầu thanh toán</Button>}
           {this.props.data.paid_3_status === 'paid' &&
             <Button className="request-pay-button" type="primary" >Đã thanh toán</Button>}
         </div>
 
         <div>File hợp đồng</div>
+        {this.props.data.IPFSHash && this.props.data.status !== 'accepted' &&
+          < a onClick={() => window.open('http://localhost:8080/ipfs/' + this.props.data.IPFSHash, '_blank')}><Alert message={'File hash: ' + this.props.data.IPFSHash} type="info" /></a>}
+
+        {this.props.data.IPFSHash && this.props.data.status === 'accepted' && this.state.IPFSHash &&
+          < a onClick={() => window.open('http://localhost:8080/ipfs/' + this.state.IPFSHash, '_blank')}> <Alert message={'File hash: ' + this.state.IPFSHash} type="info" /></a >}
 
         <div>Chữ kí bên thuê</div>
         <div style={{ border: '1px solid black' }}>
@@ -215,7 +228,7 @@ class ContractConfirmModal extends Component {
           {contractEditable ? <Button type="primary" onClick={this.submit}>Gửi</Button> : null
           }
         </div>
-      </div>
+      </div >
     );
   }
 }

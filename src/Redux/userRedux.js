@@ -26,7 +26,8 @@ import {
 
     SET_RESULT_CONTRACT_LIST,
     SET_USER_WALLET_ADDRESS,
-    SET_USER_COMPANY_INFO
+    SET_USER_COMPANY_INFO,
+    SET_NOTIFICATION_LIST
 } from './Actions/actions';
 
 
@@ -40,7 +41,8 @@ export const DefaultAccountState = {
     userCompanyInfo: null,
     isGettingUserInfo: false,
     num: 1,
-    userInfo: null
+    userInfo: null,
+    notificationList:null
 
 
 }
@@ -69,6 +71,7 @@ export const accountReducer = (state = DefaultAccountState, action) => {
         case SIGNOUT: return { ...state, userInfo: null };
         case SET_USER_WALLET_ADDRESS: return { ...state, userInfo: { ...state.userInfo, walletAddress: action.walletAdress } }
         case SET_USER_COMPANY_INFO: return { ...state, userCompanyInfo: action.data }
+        case SET_NOTIFICATION_LIST: return{...state,notificationList:action.notificationList}
         default: return state;
     }
 }
