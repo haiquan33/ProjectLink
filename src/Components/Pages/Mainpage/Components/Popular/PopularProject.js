@@ -31,6 +31,8 @@ class PopularProject extends Component {
         const categoryData = {}
         if (this.props.resultProblemList)
             this.props.resultProblemList.map(item => {
+                console.log(item.status)
+                if (item.status!=='waiting') return null
                 if (categoryData[item.subject])
                     categoryData[item.subject].push(item)
                 else {

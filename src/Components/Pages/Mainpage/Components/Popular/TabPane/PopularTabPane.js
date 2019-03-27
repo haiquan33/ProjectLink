@@ -29,7 +29,8 @@ class PopularTabPane extends React.Component {
           itemLayout="horizontal"
           dataSource={this.props.data}
           renderItem={item => (
-            <ProblemItem openUserInfoViewModal={this.props.openUserInfoViewModal} data={item} />
+            item.status==='waiting'?
+            <ProblemItem openUserInfoViewModal={this.props.openUserInfoViewModal} data={item} />:<div/>
           )} /> : null}
 
 

@@ -115,7 +115,7 @@ export function add_new_problem(userInfo, problem) {
                 photoURL: userInfo.photoURL
             },
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            status: 'pending'
+            status: 'waiting'
 
         }
         //Add to problem table
