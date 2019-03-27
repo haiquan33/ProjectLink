@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "ant-design-pro": "^2.3.1",
     "antd": "^3.4.5",
     "ethereumjs-testrpc": "^6.0.3",
     "firebase": "^4.13.1",

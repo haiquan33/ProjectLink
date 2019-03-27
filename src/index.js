@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import 'antd/dist/antd.css';
-
+import 'ant-design-pro/dist/ant-design-pro.css';
 
 ///redux
 import thunkMiddleware from 'redux-thunk'

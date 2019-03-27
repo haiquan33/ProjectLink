@@ -19,6 +19,7 @@ import { loginGG, checkLogged_and_Login_automatically, SignOutGG } from '../../.
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
 import { push } from 'react-router-redux'
+import { NotifyButton } from '../../Pages/ProblemOwner/Dashboard/Header/NotifyButton.js';
 
 class Header extends Component {
 
@@ -61,29 +62,13 @@ class Header extends Component {
       console.log(email);
     }
 
-    let notifyList = this.props.notificationList ?
-      <Menu>
-        {this.props.notificationList.map(noti =>
-          <Menu.Item key={noti.id}>
-            <a >{noti.notiData.content}</a>
-          </Menu.Item>
-        )
 
-        }
-      </Menu>
-      : <Menu>
-        <Menu.Item key='notiLoad'>
-          <Icon type="loading" />
-        </Menu.Item>
-      </Menu>
 
     return (
       <Layout.Header>
         <a href="/"> PROJECTLINK</a>
         <div className="notifi-button">
-          <Dropdown overlay={notifyList} trigger={['click']}>
-            <Icon type="bell" />
-          </Dropdown>
+          <NotifyButton notifyList={this.props.notificationList}/>
         </div>
         {
           this.props.userInfo ?

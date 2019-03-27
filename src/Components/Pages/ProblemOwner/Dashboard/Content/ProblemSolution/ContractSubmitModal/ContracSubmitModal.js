@@ -1,19 +1,18 @@
-import React, { Component } from 'react';
-import { Upload, Button } from 'antd'
-import SignatureCanvas from 'react-signature-canvas';
-import firebase_init from '../../../../../../../firebase'
+import React, { Component } from "react";
+import { Upload, Button } from "antd";
+import SignatureCanvas from "react-signature-canvas";
+import firebase_init from "../../../../../../../firebase";
 import FileUploader from "react-firebase-file-uploader";
-import { DatePicker, Alert, Select, Progress } from 'antd';
-import NumericInputDemo from '../../../../../../Components/Common/NumericInput'
+import { DatePicker, Alert, Select, Progress } from "antd";
+import NumericInputDemo from "../../../../../../Components/Common/NumericInput";
 
-import './ContractSubmitModal.css'
+import "./ContractSubmitModal.css";
 
-
-import { tokenAPI } from '../../../../../../../BlockChainAPI/tokenAPI'
-import web3 from '../../../../../../../BlockChainAPI/web3'
-import IPFSUploader from '../../../../../ContractSignPage/IPFSUploader';
-
-
+import { tokenAPI } from "../../../../../../../BlockChainAPI/tokenAPI";
+import web3 from "../../../../../../../BlockChainAPI/web3";
+import IPFSUploader from "../../../../../ContractSignPage/IPFSUploader";
+import { createNotification } from "../../../../../../../Redux/service";
+import appConstant from "../../../../../../../Configs/constants.config";
 
 const Option = Select.Option;
 class ContractSubmitModal extends Component {
@@ -40,7 +39,6 @@ class ContractSubmitModal extends Component {
     this.onThirdPaidTokenChange = this.onThirdPaidTokenChange.bind(this);
     this.checkContractData = this.checkContractData.bind(this);
     this.handleWalletChange = this.handleWalletChange.bind(this);
-
   }
   checkContractData() {
     if (!this.state.resHash) return false;
@@ -59,7 +57,12 @@ class ContractSubmitModal extends Component {
     console.error(error);
   };
   handleUploadSuccess = filename => {
-    this.setState({ ContractFilename: filename, url: filename, progress: 100, isUploading: false });
+    this.setState({
+      ContractFilename: filename,
+      url: filename,
+      progress: 100,
+      isUploading: false
+    });
     firebase_init
       .storage()
       .ref("contracts")
@@ -68,29 +71,25 @@ class ContractSubmitModal extends Component {
       .then(url => this.setState({ fileurl: url }));
   };
 
-
-
   set_deadline1(date, dateString) {
-    this.setState({ deadline_1: dateString })
+    this.setState({ deadline_1: dateString });
   }
   set_deadline2(date, dateString) {
-    this.setState({ deadline_2: dateString })
+    this.setState({ deadline_2: dateString });
   }
   set_deadline3(date, dateString) {
-    this.setState({ deadline_3: dateString })
-
+    this.setState({ deadline_3: dateString });
   }
 
-  onFirstPaidTokenChange = (value) => {
+  onFirstPaidTokenChange = value => {
     this.setState({ firstPaidToken: value });
-  }
-  onSecondPaidTokenChange = (value) => {
+  };
+  onSecondPaidTokenChange = value => {
     this.setState({ secondPaidToken: value });
-  }
-  onThirdPaidTokenChange = (value) => {
+  };
+  onThirdPaidTokenChange = value => {
     this.setState({ thirdPaidToken: value });
-  }
-
+  };
 
   submit() {
     let ProblemOwnerSign = this.sigCanvas.toData();
@@ -110,13 +109,10 @@ class ContractSubmitModal extends Component {
       thirdPaidToken: this.state.thirdPaidToken,
       ProblemOwnerWallet: this.state.defaultWallet,
       IPFSHash: this.state.resHash
-
-    }
-
+    };
 
     //console.log("my Balance",);
     // let balance = parseInt(tokenAPI.myBalance());
-
 
     // if (balance < this.state.firstPaidToken) {
 
@@ -127,101 +123,150 @@ class ContractSubmitModal extends Component {
     if (this.checkContractData()) {
       this.props.submit_contract(temp_data);
       this.props.closeContractSubmitModal();
+      const notiData = {
+        content:
+          "Giải pháp của bạn đã được chấp nhận, vui lòng xem xét hợp đồng được gửi kèm",
+        problemID: temp_data.problemID
+      };
 
-      //lock token 
+      createNotification(
+        temp_data.SolutionOwnerID,
+        notiData,
+        appConstant.RECEIVED_CONTRACT
+      );
+      //lock token
       // tokenAPI.lockBalance(this.state.firstPaidToken)
-
-    }
-    else {
-      this.setState({ alertError: "Chưa upload file hợp đồng", alert: true })
+    } else {
+      this.setState({ alertError: "Chưa upload file hợp đồng", alert: true });
     }
   }
 
-
   handleWalletChange(value) {
     this.setState({ defaultWallet: value }, () => {
-      web3.eth.defaultAccount = this.state.defaultWallet
+      web3.eth.defaultAccount = this.state.defaultWallet;
       let balance = parseInt(tokenAPI.myBalance().toNumber());
-      console.log(balance)
-      this.setState({ walletBalance: balance })
-    })
-
-
-
+      console.log(balance);
+      this.setState({ walletBalance: balance });
+    });
   }
   componentDidMount() {
     let accountList = web3.eth.accounts;
 
     this.setState({ walletList: accountList, defaultWallet: accountList[0] });
     let balance = parseInt(tokenAPI.myBalance().toNumber());
-    this.setState({ walletBalance: balance })
+    this.setState({ walletBalance: balance });
   }
 
   onStartUploadFile = () => {
-    this.setState({ isFileUploading: true, isShowUploadHash: false })
-  }
+    this.setState({ isFileUploading: true, isShowUploadHash: false });
+  };
 
   onProgressUploadFile = (byte, totalSize) => {
-    this.setState({ uploadPercent: byte / totalSize })
-  }
-  onFinishUploadFile = (res) => {
-    this.setState({ isFileUploading: false, resHash: res[0].hash, isShowUploadHash: true })
-  }
+    this.setState({ uploadPercent: byte / totalSize });
+  };
+  onFinishUploadFile = res => {
+    this.setState({
+      isFileUploading: false,
+      resHash: res[0].hash,
+      isShowUploadHash: true
+    });
+  };
 
   render() {
     let walletSelect = [];
     if (this.state.walletList) {
       for (var wallet in this.state.walletList) {
-        walletSelect.push(<Option value={this.state.walletList[wallet]}>{this.state.walletList[wallet]}</Option>)
+        walletSelect.push(
+          <Option value={this.state.walletList[wallet]}>
+            {this.state.walletList[wallet]}
+          </Option>
+        );
       }
     }
     return (
       <div className="ContractSubmitModal">
-        {this.state.alert ? <Alert
-          message={this.state.alertError}
-          type="error"
+        {this.state.alert ? (
+          <Alert message={this.state.alertError} type="error" />
+        ) : null}
 
-
-        />
-          : null}
-
-        {this.state.walletList ?
-          <Select defaultValue={this.state.walletList[0]} onChange={this.handleWalletChange}>
+        {this.state.walletList ? (
+          <Select
+            defaultValue={this.state.walletList[0]}
+            onChange={this.handleWalletChange}
+          >
             {walletSelect}
           </Select>
-          : null}
-        {this.state.walletBalance &&
-          <Alert message={'Số dư hiện tại ' + this.state.walletBalance} type="info" />}
+        ) : null}
+        {this.state.walletBalance && (
+          <Alert
+            message={"Số dư hiện tại " + this.state.walletBalance}
+            type="info"
+          />
+        )}
 
         <div>Hạn thanh toán đợt 1</div>
         <DatePicker onChange={this.set_deadline1} />
-        <NumericInputDemo value={this.state.firstPaidToken} onChange={this.onFirstPaidTokenChange} placeholder="Nhập số tiền thanh toán đợt này" />
+        <NumericInputDemo
+          value={this.state.firstPaidToken}
+          onChange={this.onFirstPaidTokenChange}
+          placeholder="Nhập số tiền thanh toán đợt này"
+        />
         <div>Hạn thanh toán đợt 2</div>
         <DatePicker onChange={this.set_deadline2} />
-        <NumericInputDemo value={this.state.secondPaidToken} onChange={this.onSecondPaidTokenChange} placeholder="Nhập số tiền thanh toán đợt này" />
+        <NumericInputDemo
+          value={this.state.secondPaidToken}
+          onChange={this.onSecondPaidTokenChange}
+          placeholder="Nhập số tiền thanh toán đợt này"
+        />
         <div>Hạn thanh toán đợt 3</div>
         <DatePicker onChange={this.set_deadline3} />
-        <NumericInputDemo value={this.state.thirdPaidToken} onChange={this.onThirdPaidTokenChange} placeholder="Nhập số tiền thanh toán đợt này" />
+        <NumericInputDemo
+          value={this.state.thirdPaidToken}
+          onChange={this.onThirdPaidTokenChange}
+          placeholder="Nhập số tiền thanh toán đợt này"
+        />
 
         <div>File hợp đồng</div>
-        <IPFSUploader onStart={this.onStartUploadFile} onFinish={this.onFinishUploadFile} onProgress={this.onProgressUploadFile} />
-        {this.state.isFileUploading &&
-          <Progress percent={this.state.uploadPercent} />}
-        {this.state.isShowUploadHash &&
-          <a onClick={() => window.open('http://localhost:8080/ipfs/' + this.state.resHash, '_blank')}><Alert message={'File hash: ' + this.state.resHash} type="info" /></a>}
-
+        <IPFSUploader
+          onStart={this.onStartUploadFile}
+          onFinish={this.onFinishUploadFile}
+          onProgress={this.onProgressUploadFile}
+        />
+        {this.state.isFileUploading && (
+          <Progress percent={this.state.uploadPercent} />
+        )}
+        {this.state.isShowUploadHash && (
+          <a
+            onClick={() =>
+              window.open(
+                "http://localhost:8080/ipfs/" + this.state.resHash,
+                "_blank"
+              )
+            }
+          >
+            <Alert message={"File hash: " + this.state.resHash} type="info" />
+          </a>
+        )}
 
         <div>Chữ kí bên thuê</div>
-        <div style={{ border: '1px solid black' }}>
-          <SignatureCanvas penColor='green'
-            ref={(ref) => { this.sigCanvas = ref }}
-            canvasProps={{ width: 500, height: 200, className: 'sigCanvas', }} />
+        <div style={{ border: "1px solid black" }}>
+          <SignatureCanvas
+            penColor="green"
+            ref={ref => {
+              this.sigCanvas = ref;
+            }}
+            canvasProps={{ width: 500, height: 200, className: "sigCanvas" }}
+          />
         </div>
         <div className="ContractModalFooter">
-          <Button type="default" onClick={this.props.closeContractSubmitModal}>Close</Button>
-          <Button type="primary" onClick={this.submit}>Gửi</Button>
+          <Button type="default" onClick={this.props.closeContractSubmitModal}>
+            Close
+          </Button>
+          <Button type="primary" onClick={this.submit}>
+            Gửi
+          </Button>
         </div>
-      </div >
+      </div>
     );
   }
 }
