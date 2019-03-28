@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 
-import { Button, Select } from 'antd'
+import { Button, Select,Steps,Icon } from 'antd'
 import SignatureCanvas from 'react-signature-canvas';
 
 import { DatePicker, Alert, notification } from 'antd';
@@ -11,12 +11,14 @@ import { __makeTemplateObject } from 'tslib';
 
 import web3 from '../../../../../../BlockChainAPI/web3'
 import { tokenAPI } from '../../../../../../BlockChainAPI/tokenAPI';
-import { requestPay } from '../../../../../../Redux/service';
+import { requestPay, createNotification } from '../../../../../../Redux/service';
+import appConstant from '../../../../../../Configs/constants.config';
 
 
 
 
 const Option = Select.Option;
+const Step=Steps.Step
 class ContractConfirmModal extends Component {
   constructor(props) {
     super(props);
@@ -90,6 +92,11 @@ class ContractConfirmModal extends Component {
     this.props.submit_contract_confirmation(temp_data);
     this.props.closeContractConfirmModal();
 
+    const notiData={
+      content:'Hợp đồng của bạn đã được chấp nhận, xin vui lòng thực hiện tiến hành để bắt đầu dự án giai đoạn 1',
+      problemID:data.id
+    }
+    createNotification(data.ProblemOwnerID,notiData,appConstant.RECEIVED_CONTRACT_ACCEPT)
 
   }
 
@@ -145,6 +152,13 @@ class ContractConfirmModal extends Component {
       onFail: () => this.openNotification('Hiện chưa tới deadline của hợp đồng, vui lòng thử lại sau')
     }
     requestPay(this.props.data.id, order, afterAction)
+    const notiData={
+      content:'Một yêu cầu thanh toán đã được gửi đến bạn, hãy kiểm tra dashboard để kiểm tra kết quả công việc và thanh toán',
+      problemID:this.props.data.id
+    }
+    createNotification(this.props.data.ProblemOwnerID,notiData,appConstant.RECEIVED_REQUEST_PAY)
+
+
   }
 
   render() {
@@ -156,7 +170,106 @@ class ContractConfirmModal extends Component {
         walletSelect.push(<Option value={this.state.walletList[wallet]}>{this.state.walletList[wallet]}</Option>)
       }
     }
-    console.log(contractEditable)
+    const contractData=this.props.data
+    const contractProgress = (
+      <div style={{margin:'10px'}}>
+        <Steps size="small">
+          <Step
+            status="finish"
+            title="Kí hợp đồng"
+            icon={<Icon type="solution" />}
+          />
+
+          {/*----deadline 1-----*/}
+          {!contractData.paid_2_status ||
+          contractData.paid_1_status === "pending" ? (
+            <Step
+              status="wait"
+              title="Giai đoạn 1"
+              icon={<Icon type="credit-card" />}
+            />
+          ) : null}
+          {contractData.paid_1_status === "requesting" ? (
+            <Step
+              status="process"
+              title="Giai đoạn 1"
+              description="Chờ thanh toán đợt 1"
+              icon={<Icon type="loading" />}
+            />
+          ) : null}
+          {contractData.paid_1_status === "paid" ? (
+            <Step
+              status="finish"
+              title="Giai đoạn 1"
+              icon={<Icon type="check-circle" />}
+            />
+          ) : null}
+
+          {/*----deadline 2-----*/}
+          {!contractData.paid_2_status ||
+          contractData.paid_2_status === "pending" ? (
+            <Step
+              status="wait"
+              title="Giai đoạn 2"
+              icon={<Icon type="credit-card" />}
+            />
+          ) : null}
+          {contractData.paid_2_status === "requesting" ? (
+            <Step
+              status="process"
+              title="Giai đoạn 2"
+              description="Chờ thanh toán đợt 2"
+              icon={<Icon type="loading" />}
+            />
+          ) : null}
+          {contractData.paid_2_status === "paid" ? (
+            <Step
+              status="finish"
+              title="Giai đoạn 2"
+              icon={<Icon type="check-circle" />}
+            />
+          ) : null}
+
+          {/*----deadline 3-----*/}
+          {!contractData.paid_3_status ||
+          contractData.paid_3_status === "pending" ? (
+            <Step
+              status="wait"
+              title="Giai đoạn 3"
+              icon={<Icon type="credit-card" />}
+            />
+          ) : null}
+          {contractData.paid_3_status === "requesting" ? (
+            <Step
+              status="process"
+              title="Giai đoạn 3"
+              description="Chờ thanh toán đợt 3"
+              icon={<Icon type="loading" />}
+            />
+          ) : null}
+          {contractData.paid_3_status === "paid" ? (
+            <Step
+              status="finish"
+              title="Giai đoạn 3"
+              icon={<Icon type="check-circle" />}
+            />
+          ) : null}
+           {contractData.paid_3_status === "paid" ? (
+            <Step
+              status="finish"
+              title="Hoàn tất"
+              icon={<Icon type="flag" />}
+            />
+          ) : (
+            <Step
+              status="wait"
+              title="Hoàn tất"
+              icon={<Icon type="flag" />}
+            />
+          ) }
+        </Steps>
+      </div>
+    );
     return (
       <div className="ContractSubmitModal">
         {this.state.alert ? <Alert
@@ -166,7 +279,7 @@ class ContractConfirmModal extends Component {
 
         />
           : null}
-
+        {contractProgress}
         {this.state.walletList ?
           <Select disabled={!contractEditable} defaultValue={this.props.data.SolutionOwnerWallet ? this.props.data.SolutionOwnerWallet : this.state.walletList[0]} onChange={this.handleWalletChange}>
             {walletSelect}

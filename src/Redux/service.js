@@ -317,7 +317,7 @@ export function activeDeadline(problemID, order, afterAction) {
                             }
                             else
 
-                                afterAction.onFail('Có lỗi xảy ra, vui lòng thử lại')
+                                afterAction.onFail('Có lỗi xảy ra, vui lòng thử lại',err)
 
                         })
                     }
@@ -631,7 +631,7 @@ export function getUserCompanyInfo(userId) {
 
 export function getUserNotificationList(userId) {
     return (dispatch) => {
-        firestore.collection(Notify_Table).doc(userId).collection(NotifcationsCol).orderBy('timestamp','desc').get().then((snapshot) => {
+        firestore.collection(Notify_Table).doc(userId).collection(NotifcationsCol).orderBy('timestamp','desc').onSnapshot((snapshot) => {
             let list = [];
             snapshot.forEach((doc) => {
 

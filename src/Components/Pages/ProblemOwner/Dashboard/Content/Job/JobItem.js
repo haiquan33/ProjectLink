@@ -357,7 +357,7 @@ export default class JobItem extends Component {
   render() {
     const menu = (
       <Menu onClick={this.handleMenuItemClick}>
-        {this.props.data.status === "pending" && (
+        {this.props.data.status === "waiting" && (
           <Menu.Item key="solution">
             <Icon type="solution" />{" "}
             <Link

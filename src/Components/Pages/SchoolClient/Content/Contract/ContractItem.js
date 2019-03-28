@@ -60,6 +60,7 @@ export default class ContractItem extends Component {
                     visible={this.state.showContractConfirmModal}
                     title="Gừi hợp đồng"
                     footer={null}
+                    width='60vw'
                 >
                     {this.state.showLoadingContract ? <Spin tip="Loading...">
                        
