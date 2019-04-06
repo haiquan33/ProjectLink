@@ -5,12 +5,12 @@ import './ProblemListContainer.css';
 import JobList from './JobList';
 import WrappedCreateJobForm from './Form/CreateJobForm';
 //Ant
-import { Affix,Button,Modal } from 'antd';
+import { Affix, Button, Modal } from 'antd';
 
 
 
 //Redux component
-import {get_All_Problem_List_from_this_account,add_new_problem} from '../../../../../../Redux/service'
+import { get_All_Problem_List_from_this_account, add_new_problem } from '../../../../../../Redux/service'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
 
@@ -21,30 +21,58 @@ import { bindActionCreators } from 'redux';
 
 class ProblemListContainer extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state = { showCreateProblemModal: false};
-        this.openCreateProblemModal=this.openCreateProblemModal.bind(this);
-        this.handleCloseCreateProblemModal=this.handleCloseCreateProblemModal.bind(this);
+        this.state = { showCreateProblemModal: false };
+        this.openCreateProblemModal = this.openCreateProblemModal.bind(this);
+        this.handleCloseCreateProblemModal = this.handleCloseCreateProblemModal.bind(this);
 
     }
+    componentDidUpdate(prevProps) {
+        // Typical usage (don't forget to compare props):
+        if (this.props.match.params.postedType !== prevProps.match.params.postedType) {
+            if (this.props.match.params.postedType == 'all') {
+
+                this.props.get_All_Problem_List_from_this_account(this.props.userInfo.uid,'all');
+    
+            }
+            if (this.props.match.params.postedType == 'pending') {
+                
+                this.props.get_All_Problem_List_from_this_account(this.props.userInfo.uid, 'pending');
+    
+            }
+            if (this.props.match.params.postedType=='completed')
+            {
+                this.props.get_All_Problem_List_from_this_account(this.props.userInfo.uid, 'completed');
+            }
+        }
+      }
     componentDidMount() {
         //nếu user yêu cầu list tất cả các công viêc đã đăng thì thực hiện lấy các công việc
         
         if (this.props.match.params.postedType == 'all') {
+
+            this.props.get_All_Problem_List_from_this_account(this.props.userInfo.uid,'all');
+
+        }
+        if (this.props.match.params.postedType == 'pending') {
             
-                this.props.get_All_Problem_List_from_this_account(this.props.userInfo.uid);
-               
+            this.props.get_All_Problem_List_from_this_account(this.props.userInfo.uid, 'pending');
+
+        }
+        if (this.props.match.params.postedType=='completed')
+        {
+            this.props.get_All_Problem_List_from_this_account(this.props.userInfo.uid, 'completed');
         }
     }
 
-    openCreateProblemModal(){
-        this.setState({showCreateProblemModal:true});
+    openCreateProblemModal() {
+        this.setState({ showCreateProblemModal: true });
     }
 
-      //sau khi create job modal đóng
-      afterCreateProblemModalClose() {
-       
+    //sau khi create job modal đóng
+    afterCreateProblemModalClose() {
+
     }
 
 
@@ -57,7 +85,7 @@ class ProblemListContainer extends Component {
 
         return (
             <div>
-                <JobList userInfo={this.props.userInfo} data={this.props.resultProblemList} match={this.props.match} />        
+                <JobList userInfo={this.props.userInfo} data={this.props.resultProblemList} match={this.props.match} />
                 <Button onClick={this.openCreateProblemModal} type="primary" shape="circle" icon="plus" size={"large"} />
                 <Modal
                     visible={this.state.showCreateProblemModal}
@@ -65,9 +93,9 @@ class ProblemListContainer extends Component {
                     onCancel={() => { this.handleCloseCreateProblemModal() }}
                     bodyStyle={{ width: "100%" }}
                     closable={false}
-                    afterClose={()=>this.afterCreateProblemModalClose()}
+                    afterClose={() => this.afterCreateProblemModalClose()}
                 >
-                    <WrappedCreateJobForm userInfo={this.props.userInfo} add_new_problem={this.props.add_new_problem} handleCloseCreateProblemModal={this.handleCloseCreateProblemModal}   />
+                    <WrappedCreateJobForm userInfo={this.props.userInfo} add_new_problem={this.props.add_new_problem} handleCloseCreateProblemModal={this.handleCloseCreateProblemModal} />
                 </Modal>
             </div>
         )
@@ -88,8 +116,8 @@ function mapState2Props(state) {
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators({
-            get_All_Problem_List_from_this_account,
-            add_new_problem
+        get_All_Problem_List_from_this_account,
+        add_new_problem
     }, dispatch)
 
 }

@@ -28,7 +28,7 @@ const AccountData_Table = "AccountData";
 const Problem_Solution_Table = "ProblemSolution";
 const Problem_Contract_Table = "ProblemContract";
 const Notify_Table = "NotifyTable"
-const NotifcationsCol='notifications'
+const NotifcationsCol = 'notifications'
 export function loginGG() {
     return (dispatch) => {
         auth.signInWithPopup(Authprovider)
@@ -64,17 +64,17 @@ export function get_Problem(id) {
         })
     }
 }
-export function delete_problem(id,afterAction){
-    firestore.collection(Problem_Table).doc(id).delete().then(()=>{
-            afterAction.onSuccess();
-    }).catch(function(error) {
+export function delete_problem(id, afterAction) {
+    firestore.collection(Problem_Table).doc(id).delete().then(() => {
+        afterAction.onSuccess();
+    }).catch(function (error) {
         afterAction.onFail()
     });
 }
 
 export function get_All_Problem_List() {
     return (dispatch) => {
-        firestore.collection(Problem_Table).orderBy('timestamp','desc').get().then((snapshot) => {
+        firestore.collection(Problem_Table).orderBy('timestamp', 'desc').get().then((snapshot) => {
             let list = [];
             snapshot.forEach((doc) => {
 
@@ -88,23 +88,60 @@ export function get_All_Problem_List() {
     }
 }
 
-export function get_All_Problem_List_from_this_account(accountUID) {
+export function get_All_Problem_List_from_this_account(accountUID, status) {
     return (dispatch) => {
-        firestore.collection(Problem_Table).where("uid", "==", accountUID).orderBy('timestamp','desc').onSnapshot(function (snapshot) {
+        if (status === 'all') {
+            firestore.collection(Problem_Table).where("uid", "==", accountUID).orderBy('timestamp', 'desc').onSnapshot(function (snapshot) {
 
-            let list = [];
-            snapshot.forEach(function (doc) {
-                // doc.data() is never undefined for query doc snapshots
+                let list = [];
+                snapshot.forEach(function (doc) {
+                    // doc.data() is never undefined for query doc snapshots
 
-                var item = doc.data();
-                item = { ...item, id: doc.id }
-                list.push(item);
+                    var item = doc.data();
+                    item = { ...item, id: doc.id }
+                    list.push(item);
 
-            });
+                });
 
-            dispatch(set_result_problem_list(list));
+                dispatch(set_result_problem_list(list));
 
-        })
+            })
+        }
+        if (status === 'pending') {
+            firestore.collection(Problem_Table).where("uid", "==", accountUID).where('status', '==', 'pending').orderBy('timestamp', 'desc').onSnapshot(function (snapshot) {
+
+                let list = [];
+                snapshot.forEach(function (doc) {
+                    // doc.data() is never undefined for query doc snapshots
+
+                    var item = doc.data();
+                    item = { ...item, id: doc.id }
+                    list.push(item);
+
+                });
+
+                dispatch(set_result_problem_list(list));
+
+            })
+        }
+        if (status === 'completed') {
+            firestore.collection(Problem_Table).where("uid", "==", accountUID).where('status', '==', 'accepted').orderBy('timestamp', 'desc').onSnapshot(function (snapshot) {
+
+                let list = [];
+                snapshot.forEach(function (doc) {
+                    // doc.data() is never undefined for query doc snapshots
+
+                    var item = doc.data();
+                    item = { ...item, id: doc.id }
+                    list.push(item);
+
+                });
+
+                dispatch(set_result_problem_list(list));
+
+            })
+        }
+
     }
 }
 
@@ -127,7 +164,7 @@ export function add_new_problem(userInfo, problem) {
         }
         //Add to problem table
         firestore.collection(Problem_Table).add(data).then(() => {
-           
+
         })
 
     }
@@ -187,7 +224,7 @@ export function submit_contract(data) {
             ProblemOwnerWallet: data.ProblemOwnerWallet,
             IPFSHash: data.IPFSHash,
             status: "pending",
-            problemData:data.problemData,
+            problemData: data.problemData,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
 
 
@@ -220,21 +257,21 @@ export function submit_contract_confirmation(data) {
     }
 }
 
-export function update_contract(problemID,data){
+export function update_contract(problemID, data) {
     firestore.collection(Problem_Contract_Table).doc(problemID).update({
-        
+
         ...data
-       
+
 
 
     })
 }
 
-export function submit_contract_rejection(problemID){
+export function submit_contract_rejection(problemID) {
     firestore.collection(Problem_Contract_Table).doc(problemID).update({
-        
+
         status: "rejected",
-       
+
 
 
     })
@@ -251,23 +288,59 @@ export function submit_contract_rejection(problemID){
 
 
 
-export function get_contract_list_of_solution_owner(userID) {
+export function get_contract_list_of_solution_owner(userID, status) {
     return (dispatch) => {
-        firestore.collection(Problem_Contract_Table).where("SolutionOwnerID", "==", userID).get().then((querySnapshot) => {
-            // if co du lieu thi lay ve
-            let list = [];
-            querySnapshot.forEach(function (doc) {
-                // doc.data() is never undefined for query doc snapshots
-                var item = doc.data();
-                item = { ...item, id: doc.id }
-                list.push(item);
+        if (status === 'all') {
+            firestore.collection(Problem_Contract_Table).where("SolutionOwnerID", "==", userID).get().then((querySnapshot) => {
+                // if co du lieu thi lay ve
+                let list = [];
+                querySnapshot.forEach(function (doc) {
+                    // doc.data() is never undefined for query doc snapshots
+                    var item = doc.data();
+                    item = { ...item, id: doc.id }
+                    list.push(item);
 
-            });
+                });
 
-            if (list.length >= 1)
-                dispatch(set_result_contract_list(list))
-            else dispatch(set_result_contract_list(null))
-        })
+                if (list.length >= 1)
+                    dispatch(set_result_contract_list(list))
+                else dispatch(set_result_contract_list(null))
+            })
+        }
+        if (status === 'waiting') {
+            firestore.collection(Problem_Contract_Table).where("SolutionOwnerID", "==", userID).where('status','==','pending').get().then((querySnapshot) => {
+                // if co du lieu thi lay ve
+                let list = [];
+                querySnapshot.forEach(function (doc) {
+                    // doc.data() is never undefined for query doc snapshots
+                    var item = doc.data();
+                    item = { ...item, id: doc.id }
+                    list.push(item);
+
+                });
+
+                if (list.length >= 1)
+                    dispatch(set_result_contract_list(list))
+                else dispatch(set_result_contract_list(null))
+            })
+        }
+        if (status === 'accepted') {
+            firestore.collection(Problem_Contract_Table).where("SolutionOwnerID", "==", userID).where('status','==','accepted').get().then((querySnapshot) => {
+                // if co du lieu thi lay ve
+                let list = [];
+                querySnapshot.forEach(function (doc) {
+                    // doc.data() is never undefined for query doc snapshots
+                    var item = doc.data();
+                    item = { ...item, id: doc.id }
+                    list.push(item);
+
+                });
+
+                if (list.length >= 1)
+                    dispatch(set_result_contract_list(list))
+                else dispatch(set_result_contract_list(null))
+            })
+        }
     }
 }
 
@@ -350,7 +423,7 @@ export function activeDeadline(problemID, order, afterAction) {
                             }
                             else
 
-                                afterAction.onFail('Có lỗi xảy ra, vui lòng thử lại',err)
+                                afterAction.onFail('Có lỗi xảy ra, vui lòng thử lại', err)
 
                         })
                     }
@@ -664,7 +737,7 @@ export function getUserCompanyInfo(userId) {
 
 export function getUserNotificationList(userId) {
     return (dispatch) => {
-        firestore.collection(Notify_Table).doc(userId).collection(NotifcationsCol).orderBy('timestamp','desc').onSnapshot((snapshot) => {
+        firestore.collection(Notify_Table).doc(userId).collection(NotifcationsCol).orderBy('timestamp', 'desc').onSnapshot((snapshot) => {
             let list = [];
             snapshot.forEach((doc) => {
 

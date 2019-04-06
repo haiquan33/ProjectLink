@@ -74,7 +74,7 @@ class DashboardContainer extends Component {
                         {this.props.userInfo ?
                             <Switch>
 
-                                <Route exact path={`${this.props.match.url}/receivedcontracts/all`} render={routeProps => <ContractListContainer submit_contract_confirmation={this.props.submit_contract_confirmation} {...routeProps} />} />
+                                <Route exact path={`${this.props.match.url}/receivedcontracts/:contractType`} render={routeProps => <ContractListContainer submit_contract_confirmation={this.props.submit_contract_confirmation} {...routeProps} />} />
                                 <Route exact path={`${this.props.match.url}/cv`} render={routeProps => <SchoolInfoPage userCompanyInfo={this.props.userCompanyInfo} saveUserCompanyInfo={this.props.saveUserCompanyInfo} addWalletAddress={this.props.addWalletAddress} userInfo={this.props.userInfo} {...routeProps} />} />
 
                             </Switch> : <Spin />}

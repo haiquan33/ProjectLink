@@ -28,12 +28,34 @@ class ContractListContainer extends Component {
         this.handleCloseCreateProblemModal=this.handleCloseCreateProblemModal.bind(this);
 
     }
+
+    componentDidUpdate(prevProps) {
+        // Typical usage (don't forget to compare props):
+        if (this.props.match.params.contractType !== prevProps.match.params.contractType) {
+            if (this.props.match.params.contractType == 'all') {
+
+                this.props.get_contract_list_of_solution_owner(this.props.userInfo.uid,'all');
+    
+            }
+            if (this.props.match.params.contractType == 'waiting') {
+                console.log('get waiting')
+                this.props.get_contract_list_of_solution_owner(this.props.userInfo.uid, 'waiting');
+    
+            }
+            if (this.props.match.params.contractType=='accepted')
+            {
+                console.log('get accepted')
+                this.props.get_contract_list_of_solution_owner(this.props.userInfo.uid, 'accepted');
+            }
+        }
+      }
+
     componentDidMount() {
         //nếu user yêu cầu list tất cả các công viêc đã đăng thì thực hiện lấy các công việc
         
         // if (this.props.match.params.postedType == 'all') {
             
-                this.props.get_contract_list_of_solution_owner(this.props.userInfo.uid);
+                this.props.get_contract_list_of_solution_owner(this.props.userInfo.uid,'all');
                
         //}
     }
