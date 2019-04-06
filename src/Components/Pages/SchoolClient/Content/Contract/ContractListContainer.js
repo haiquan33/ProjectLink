@@ -69,7 +69,7 @@ class ContractListContainer extends Component {
                 >
                  
                 </Modal>
-                <div>something</div>
+              
             </div>
         )
     }

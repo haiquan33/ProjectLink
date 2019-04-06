@@ -77,7 +77,7 @@ class Header extends Component {
             :
             <Button onClick={this.login} >SIGN IN</Button>
         }
-
+        
       </Layout.Header>
     );
   }

@@ -69,7 +69,7 @@ export default class ContractItem extends Component {
 
                 </Modal>
                 <Card hoverable
-                    title={<span onClick={this.openProblemLink} >{this.props.data.problemName}</span>}
+                    title={<span onClick={this.openProblemLink} >{this.props.data.problemData?this.props.data.problemData.problemName:'Example Name'}</span>}
                     bordered={false}
 
                     actions={[<Icon className="to-top-button" type="to-top" />,
@@ -90,7 +90,7 @@ export default class ContractItem extends Component {
 
                             description={<Collapse isOpened={true} fixedHeight={80}>
 
-                                <div>{this.props.data.problemDescription}</div>
+                                <div>{this.props.data.problemData?this.props.data.problemData.problemDescription:'Example Description'}</div>
                             </Collapse>}
                         />
                     </Row>

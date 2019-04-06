@@ -11,7 +11,7 @@ import { __makeTemplateObject } from 'tslib';
 
 import web3 from '../../../../../../BlockChainAPI/web3'
 import { tokenAPI } from '../../../../../../BlockChainAPI/tokenAPI';
-import { requestPay, createNotification } from '../../../../../../Redux/service';
+import { requestPay, createNotification, submit_contract_rejection } from '../../../../../../Redux/service';
 import appConstant from '../../../../../../Configs/constants.config';
 
 
@@ -98,6 +98,17 @@ class ContractConfirmModal extends Component {
     }
     createNotification(data.ProblemOwnerID,notiData,appConstant.RECEIVED_CONTRACT_ACCEPT)
 
+  }
+
+  reject=()=>{
+    const {data}=this.props
+        submit_contract_rejection(data.id)
+        this.props.closeContractConfirmModal();
+        const notiData={
+          content:'Hợp đồng của bạn đã bị từ chối,bạn có thể chỉnh sửa lại hợp đồng',
+          problemID:data.id
+        }
+        createNotification(data.ProblemOwnerID,notiData,appConstant.RECEIVED_CONTRACT_REJECT)
   }
 
   handleWalletChange(value) {
@@ -338,8 +349,11 @@ class ContractConfirmModal extends Component {
         </div>
         <div className="ContractModalFooter">
           <Button type="default" onClick={this.props.closeContractConfirmModal}>Close</Button>
-          {contractEditable ? <Button type="primary" onClick={this.submit}>Gửi</Button> : null
+          {contractEditable ? <Button type="primary" onClick={this.reject}>Từ chối</Button> : null
           }
+          {contractEditable ? <Button type="primary" onClick={this.submit}>Xác nhận</Button> : null
+          }
+           
         </div>
       </div >
     );

@@ -12,6 +12,7 @@ import ContracSubmitModal from "./ContractSubmitModal/ContracSubmitModal"
 import { Col } from 'antd/lib/grid';
 import moment from 'moment';
 import { Route, Link } from 'react-router-dom'
+import { getProblembyProblemID } from '../../../../../../Redux/service';
 const { Meta } = Card;
 
 
@@ -25,7 +26,7 @@ export default class SolutionItem extends Component {
         this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
         this.showSolutionDetailModal = this.showSolutionDetailModal.bind(this);
         this.closeContractSubmitModal=this.closeContractSubmitModal.bind(this)
-        this.state = { showContractSubmitModal: false }
+        this.state = { showContractSubmitModal: false ,problemData:null}
     }
 
     openProblemLink() {
@@ -34,7 +35,12 @@ export default class SolutionItem extends Component {
 
     handleMenuItemClick(e) {
         if (e.key === "solutionAccepted") {
-            this.setState({ showContractSubmitModal: true })
+            const afterAction={
+                onSuccess: (data)=> this.setState({ showContractSubmitModal: true,problemData: data}),
+                onFail:()=>console.log('get problem fail')
+            }
+            getProblembyProblemID(this.props.problemID,afterAction)
+           
         }
     }
 
@@ -61,7 +67,7 @@ export default class SolutionItem extends Component {
                     title="Gừi hợp đồng"
                     footer={null}
                     >
-                        <ContracSubmitModal userInfo={this.props.userInfo} SolutionOwnerID={this.props.data.id} ProblemOwnerID={this.props.ProblemOwnerID} problemID={this.props.problemID} submit_contract={this.props.submit_contract} closeContractSubmitModal={this.closeContractSubmitModal}/>
+                        <ContracSubmitModal  problemData={this.state.problemData} userInfo={this.props.userInfo} SolutionOwnerID={this.props.data.id} ProblemOwnerID={this.props.ProblemOwnerID} problemID={this.props.problemID} submit_contract={this.props.submit_contract} closeContractSubmitModal={this.closeContractSubmitModal}/>
                     </Modal>
                 <Card hoverable
                     title={<span onClick={this.showSolutionDetailModal} >{this.props.data.solution.ownerName}</span>}

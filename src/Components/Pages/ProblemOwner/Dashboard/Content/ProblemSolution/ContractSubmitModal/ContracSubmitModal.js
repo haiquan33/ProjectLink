@@ -108,7 +108,10 @@ class ContractSubmitModal extends Component {
       secondPaidToken: this.state.secondPaidToken,
       thirdPaidToken: this.state.thirdPaidToken,
       ProblemOwnerWallet: this.state.defaultWallet,
-      IPFSHash: this.state.resHash
+      IPFSHash: this.state.resHash,
+      problemData:{
+        ...this.props.problemData
+      }
     };
 
     //console.log("my Balance",);

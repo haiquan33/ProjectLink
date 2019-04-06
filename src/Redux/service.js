@@ -64,6 +64,13 @@ export function get_Problem(id) {
         })
     }
 }
+export function delete_problem(id,afterAction){
+    firestore.collection(Problem_Table).doc(id).delete().then(()=>{
+            afterAction.onSuccess();
+    }).catch(function(error) {
+        afterAction.onFail()
+    });
+}
 
 export function get_All_Problem_List() {
     return (dispatch) => {
@@ -83,7 +90,7 @@ export function get_All_Problem_List() {
 
 export function get_All_Problem_List_from_this_account(accountUID) {
     return (dispatch) => {
-        firestore.collection(Problem_Table).where("uid", "==", accountUID).get().then(function (snapshot) {
+        firestore.collection(Problem_Table).where("uid", "==", accountUID).orderBy('timestamp','desc').onSnapshot(function (snapshot) {
 
             let list = [];
             snapshot.forEach(function (doc) {
@@ -120,22 +127,7 @@ export function add_new_problem(userInfo, problem) {
         }
         //Add to problem table
         firestore.collection(Problem_Table).add(data).then(() => {
-            //sau khi thêm dữ liệu problem thì load lại các problem đã tạo
-            firestore.collection(Problem_Table).where("uid", "==", userInfo.uid).get().then(function (snapshot) {
-
-                let list = [];
-                snapshot.forEach(function (doc) {
-                    // doc.data() is never undefined for query doc snapshots
-
-                    var item = doc.data();
-                    item = { ...item, id: doc.id }
-                    list.push(item);
-
-                });
-
-                dispatch(set_result_problem_list(list));
-
-            })
+           
         })
 
     }
@@ -194,7 +186,9 @@ export function submit_contract(data) {
             thirdPaidToken: data.thirdPaidToken,
             ProblemOwnerWallet: data.ProblemOwnerWallet,
             IPFSHash: data.IPFSHash,
-            status: "pending"
+            status: "pending",
+            problemData:data.problemData,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
 
 
         })
@@ -226,6 +220,34 @@ export function submit_contract_confirmation(data) {
     }
 }
 
+export function update_contract(problemID,data){
+    firestore.collection(Problem_Contract_Table).doc(problemID).update({
+        
+        ...data
+       
+
+
+    })
+}
+
+export function submit_contract_rejection(problemID){
+    firestore.collection(Problem_Contract_Table).doc(problemID).update({
+        
+        status: "rejected",
+       
+
+
+    })
+    firestore.collection(Problem_Table).doc(problemID).update({
+
+        status: "rejected",
+
+
+
+    })
+
+
+}
 
 
 
@@ -263,7 +285,18 @@ export function getContractByProblemID(problemID, afterAction) {
 
 }
 
+export function getProblembyProblemID(problemID, afterAction) {
+    firestore.collection(Problem_Table).doc(problemID).onSnapshot((doc) => {
+        if (doc.exists) {
+            console.log(doc.data())
+            afterAction.onSuccess({ ...doc.data(), id: doc.id })
+        }
+        else {
+            afterAction.onFail()
+        }
+    })
 
+}
 export function confirmPaid_1(problemID) {
     firestore.collection(Problem_Contract_Table).doc(problemID).update({
 

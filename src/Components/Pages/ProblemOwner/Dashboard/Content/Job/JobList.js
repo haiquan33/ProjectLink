@@ -37,7 +37,7 @@ export default class JobList extends Component {
             if ((i < currentPage * pageSize) && (i >= (currentPage - 1) * pageSize)) {
 
                 children.push(
-                    <Col span={6}>
+                    <Col key={this.props.data[i].id} span={6}>
                         <JobItem  userInfo={this.props.userInfo} data={this.props.data[i]} match={this.props.match} />
 
                     </Col>
