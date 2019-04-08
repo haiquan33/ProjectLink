@@ -286,6 +286,35 @@ export function submit_contract_rejection(problemID) {
 
 }
 
+export function request_cancel_contract(problemID){
+    firestore.collection(Problem_Contract_Table).doc(problemID).update({
+
+        status: "request_cancel",
+
+    })
+}
+
+
+export function accept_request_cancel_contract(problemID){
+    firestore.collection(Problem_Contract_Table).doc(problemID).delete()
+        firestore.collection(Problem_Table).doc(problemID).update({
+
+        status: "waiting",
+
+
+
+    })
+}
+
+export function reject_request_cancel_contract(problemID){
+
+    //tra ve trang thai truoc do
+    firestore.collection(Problem_Contract_Table).doc(problemID).update({
+
+        status: "accepted",
+
+    })
+}
 
 
 export function get_contract_list_of_solution_owner(userID, status) {

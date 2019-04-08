@@ -30,7 +30,8 @@ import {
   payContract,
   activeDeadline,
   delete_problem,
-  update_contract
+  update_contract,
+  request_cancel_contract
 } from "../../../../../../Redux/service";
 import web3 from "../../../../../../BlockChainAPI/web3";
 import { tokenAPI } from "../../../../../../BlockChainAPI/tokenAPI";
@@ -289,6 +290,11 @@ export default class JobItem extends Component {
     );
   }
 
+  requestCancelContract=()=>{
+      request_cancel_contract(this.state.contractData.id)
+      this.openNotification("Yêu cầu hủy hợp đồng của bạn đã được gửi lên")
+      this.setState({showContractDetailModal:false})
+  }
   renderContractDetailModal = () => {
     const { contractData } = this.state;
     if (!contractData) return null;
@@ -528,9 +534,15 @@ export default class JobItem extends Component {
         )}
 
         <div className="ContractModalFooter">
-          <Button type="default" onClick={this.closeContractViewModal}>
+        <Button type="default" onClick={this.requestCancelContract}>
+            Hủy hợp đồng
+          </Button>
+          <Button type="primary" onClick={this.closeContractViewModal}>
             Close
           </Button>
+          
+
+
         </div>
       </div>
     );
@@ -570,6 +582,12 @@ export default class JobItem extends Component {
           </Menu.Item>
         )}
         {this.props.data.status === "accepted" && (
+          <Menu.Item key="viewContract">
+            <Icon type="solution" />
+            Xem lại hợp đồng
+          </Menu.Item>
+        )}
+         {this.props.data.status === "request_cancel" && (
           <Menu.Item key="viewContract">
             <Icon type="solution" />
             Xem lại hợp đồng

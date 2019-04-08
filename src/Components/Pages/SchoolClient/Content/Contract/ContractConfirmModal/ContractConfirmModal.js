@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 
-import { Button, Select,Steps,Icon } from 'antd'
+import { Button, Select, Steps, Icon } from 'antd'
 import SignatureCanvas from 'react-signature-canvas';
 
 import { DatePicker, Alert, notification } from 'antd';
@@ -11,14 +11,14 @@ import { __makeTemplateObject } from 'tslib';
 
 import web3 from '../../../../../../BlockChainAPI/web3'
 import { tokenAPI } from '../../../../../../BlockChainAPI/tokenAPI';
-import { requestPay, createNotification, submit_contract_rejection } from '../../../../../../Redux/service';
+import { requestPay, createNotification, submit_contract_rejection, accept_request_cancel_contract, reject_request_cancel_contract } from '../../../../../../Redux/service';
 import appConstant from '../../../../../../Configs/constants.config';
 
 
 
 
 const Option = Select.Option;
-const Step=Steps.Step
+const Step = Steps.Step
 class ContractConfirmModal extends Component {
   constructor(props) {
     super(props);
@@ -92,23 +92,23 @@ class ContractConfirmModal extends Component {
     this.props.submit_contract_confirmation(temp_data);
     this.props.closeContractConfirmModal();
 
-    const notiData={
-      content:'Hợp đồng của bạn đã được chấp nhận, xin vui lòng thực hiện tiến hành để bắt đầu dự án giai đoạn 1',
-      problemID:data.id
+    const notiData = {
+      content: 'Hợp đồng của bạn đã được chấp nhận, xin vui lòng thực hiện tiến hành để bắt đầu dự án giai đoạn 1',
+      problemID: data.id
     }
-    createNotification(data.ProblemOwnerID,notiData,appConstant.RECEIVED_CONTRACT_ACCEPT)
+    createNotification(data.ProblemOwnerID, notiData, appConstant.RECEIVED_CONTRACT_ACCEPT)
 
   }
 
-  reject=()=>{
-    const {data}=this.props
-        submit_contract_rejection(data.id)
-        this.props.closeContractConfirmModal();
-        const notiData={
-          content:'Hợp đồng của bạn đã bị từ chối,bạn có thể chỉnh sửa lại hợp đồng',
-          problemID:data.id
-        }
-        createNotification(data.ProblemOwnerID,notiData,appConstant.RECEIVED_CONTRACT_REJECT)
+  reject = () => {
+    const { data } = this.props
+    submit_contract_rejection(data.id)
+    this.props.closeContractConfirmModal();
+    const notiData = {
+      content: 'Hợp đồng của bạn đã bị từ chối,bạn có thể chỉnh sửa lại hợp đồng',
+      problemID: data.id
+    }
+    createNotification(data.ProblemOwnerID, notiData, appConstant.RECEIVED_CONTRACT_REJECT)
   }
 
   handleWalletChange(value) {
@@ -163,27 +163,37 @@ class ContractConfirmModal extends Component {
       onFail: () => this.openNotification('Hiện chưa tới deadline của hợp đồng, vui lòng thử lại sau')
     }
     requestPay(this.props.data.id, order, afterAction)
-    const notiData={
-      content:'Một yêu cầu thanh toán đã được gửi đến bạn, hãy kiểm tra dashboard để kiểm tra kết quả công việc và thanh toán',
-      problemID:this.props.data.id
+    const notiData = {
+      content: 'Một yêu cầu thanh toán đã được gửi đến bạn, hãy kiểm tra dashboard để kiểm tra kết quả công việc và thanh toán',
+      problemID: this.props.data.id
     }
-    createNotification(this.props.data.ProblemOwnerID,notiData,appConstant.RECEIVED_REQUEST_PAY)
+    createNotification(this.props.data.ProblemOwnerID, notiData, appConstant.RECEIVED_REQUEST_PAY)
 
 
+  }
+
+  acceptRequestCancel=()=>{
+    accept_request_cancel_contract(this.props.data.id)
+    this.props.closeContractConfirmModal()
+  }
+  rejectRequestCancel=()=>{
+    reject_request_cancel_contract(this.props.data.id)
+    this.props.closeContractConfirmModal()
   }
 
   render() {
     console.log(this.props.data)
     let walletSelect = [];
     let contractEditable = this.props.data.status === 'accepted' ? false : true
+    if (this.props.data.status === 'request_cancel') contractEditable = false
     if (this.state.walletList) {
       for (var wallet in this.state.walletList) {
         walletSelect.push(<Option value={this.state.walletList[wallet]}>{this.state.walletList[wallet]}</Option>)
       }
     }
-    const contractData=this.props.data
+    const contractData = this.props.data
     const contractProgress = (
-      <div style={{margin:'10px'}}>
+      <div style={{ margin: '10px' }}>
         <Steps size="small">
           <Step
             status="finish"
@@ -193,13 +203,13 @@ class ContractConfirmModal extends Component {
 
           {/*----deadline 1-----*/}
           {!contractData.paid_2_status ||
-          contractData.paid_1_status === "pending" ? (
-            <Step
-              status="wait"
-              title="Giai đoạn 1"
-              icon={<Icon type="credit-card" />}
-            />
-          ) : null}
+            contractData.paid_1_status === "pending" ? (
+              <Step
+                status="wait"
+                title="Giai đoạn 1"
+                icon={<Icon type="credit-card" />}
+              />
+            ) : null}
           {contractData.paid_1_status === "requesting" ? (
             <Step
               status="process"
@@ -218,13 +228,13 @@ class ContractConfirmModal extends Component {
 
           {/*----deadline 2-----*/}
           {!contractData.paid_2_status ||
-          contractData.paid_2_status === "pending" ? (
-            <Step
-              status="wait"
-              title="Giai đoạn 2"
-              icon={<Icon type="credit-card" />}
-            />
-          ) : null}
+            contractData.paid_2_status === "pending" ? (
+              <Step
+                status="wait"
+                title="Giai đoạn 2"
+                icon={<Icon type="credit-card" />}
+              />
+            ) : null}
           {contractData.paid_2_status === "requesting" ? (
             <Step
               status="process"
@@ -243,13 +253,13 @@ class ContractConfirmModal extends Component {
 
           {/*----deadline 3-----*/}
           {!contractData.paid_3_status ||
-          contractData.paid_3_status === "pending" ? (
-            <Step
-              status="wait"
-              title="Giai đoạn 3"
-              icon={<Icon type="credit-card" />}
-            />
-          ) : null}
+            contractData.paid_3_status === "pending" ? (
+              <Step
+                status="wait"
+                title="Giai đoạn 3"
+                icon={<Icon type="credit-card" />}
+              />
+            ) : null}
           {contractData.paid_3_status === "requesting" ? (
             <Step
               status="process"
@@ -265,19 +275,19 @@ class ContractConfirmModal extends Component {
               icon={<Icon type="check-circle" />}
             />
           ) : null}
-           {contractData.paid_3_status === "paid" ? (
+          {contractData.paid_3_status === "paid" ? (
             <Step
               status="finish"
               title="Hoàn tất"
               icon={<Icon type="flag" />}
             />
           ) : (
-            <Step
-              status="wait"
-              title="Hoàn tất"
-              icon={<Icon type="flag" />}
-            />
-          ) }
+              <Step
+                status="wait"
+                title="Hoàn tất"
+                icon={<Icon type="flag" />}
+              />
+            )}
         </Steps>
       </div>
     );
@@ -348,12 +358,18 @@ class ContractConfirmModal extends Component {
 
         </div>
         <div className="ContractModalFooter">
+          {this.props.data.status === 'request_cancel' &&
+            <Button type="primary" onClick={this.acceptRequestCancel}>Chấp nhận yêu cầu hủy hợp đồng</Button>
+          }
+          {this.props.data.status === 'request_cancel' &&
+            <Button type="primary" onClick={this.rejectRequestCancel}>Từ chối yêu cầu hủy hợp đồng</Button>
+          }
           <Button type="default" onClick={this.props.closeContractConfirmModal}>Close</Button>
           {contractEditable ? <Button type="primary" onClick={this.reject}>Từ chối</Button> : null
           }
           {contractEditable ? <Button type="primary" onClick={this.submit}>Xác nhận</Button> : null
           }
-           
+
         </div>
       </div >
     );
