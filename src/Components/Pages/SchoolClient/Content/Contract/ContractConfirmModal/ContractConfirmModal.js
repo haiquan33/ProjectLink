@@ -172,11 +172,11 @@ class ContractConfirmModal extends Component {
 
   }
 
-  acceptRequestCancel=()=>{
+  acceptRequestCancel = () => {
     accept_request_cancel_contract(this.props.data.id)
     this.props.closeContractConfirmModal()
   }
-  rejectRequestCancel=()=>{
+  rejectRequestCancel = () => {
     reject_request_cancel_contract(this.props.data.id)
     this.props.closeContractConfirmModal()
   }
@@ -202,12 +202,20 @@ class ContractConfirmModal extends Component {
           />
 
           {/*----deadline 1-----*/}
-          {!contractData.paid_2_status ||
+          {!contractData.paid_1_status ||
             contractData.paid_1_status === "pending" ? (
               <Step
                 status="wait"
                 title="Giai đoạn 1"
                 icon={<Icon type="credit-card" />}
+              />
+            ) : null}
+          {!contractData.paid_1_status ||
+            contractData.paid_1_status === "activated" ? (
+              <Step
+                status="finish"
+                title="Giai đoạn 1"
+                icon={<Icon type="flag" />}
               />
             ) : null}
           {contractData.paid_1_status === "requesting" ? (
@@ -235,6 +243,14 @@ class ContractConfirmModal extends Component {
                 icon={<Icon type="credit-card" />}
               />
             ) : null}
+          {!contractData.paid_2_status ||
+            contractData.paid_2_status === "activated" ? (
+              <Step
+                status="finish"
+                title="Giai đoạn 2"
+                icon={<Icon type="flag" />}
+              />
+            ) : null}
           {contractData.paid_2_status === "requesting" ? (
             <Step
               status="process"
@@ -258,6 +274,14 @@ class ContractConfirmModal extends Component {
                 status="wait"
                 title="Giai đoạn 3"
                 icon={<Icon type="credit-card" />}
+              />
+            ) : null}
+          {!contractData.paid_3_status ||
+            contractData.paid_3_status === "activated" ? (
+              <Step
+                status="finish"
+                title="Giai đoạn 3"
+                icon={<Icon type="flag" />}
               />
             ) : null}
           {contractData.paid_3_status === "requesting" ? (

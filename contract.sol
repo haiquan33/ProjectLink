@@ -178,7 +178,7 @@ contract ProjectLinkToken is ERC20Interface, Owned, SafeMath,PLContractInterface
         name = "ProjectLink Token";
         decimals = 18;
         _totalSupply = 100000000000000000000000000;
-        ownerAddress=0x9549da9FdFE7D8F6F1D24de695E573Af1972d413;
+        ownerAddress=msg.sender;
         balances[ownerAddress] = _totalSupply;
         emit Transfer(address(0),ownerAddress, _totalSupply);
     }

@@ -146,8 +146,8 @@ export default class JobItem extends Component {
   }
 
   submitEditedContract = () => {
-    update_contract(this.state.contractData.id,this.state.contractData)
-    this.setState({showContractEditModal:false})
+    update_contract(this.state.contractData.id, this.state.contractData)
+    this.setState({ showContractEditModal: false })
   }
   onStartUploadFile = () => {
     this.setState({ isFileUploading: true, isShowUploadHash: false });
@@ -165,23 +165,23 @@ export default class JobItem extends Component {
     });
   };
 
-  set_deadline1=(date, dateString) =>{
+  set_deadline1 = (date, dateString) => {
     this.setState({ contractData: { ...this.state.contractData, deadline_1: dateString } });
   }
-  set_deadline2=(date, dateString)=> {
-    this.setState({ contractData:{...this.state.contractData,deadline_2: dateString } });
+  set_deadline2 = (date, dateString) => {
+    this.setState({ contractData: { ...this.state.contractData, deadline_2: dateString } });
   }
-  set_deadline3=(date, dateString)=> {
-    this.setState({ contractData:{...this.state.contractData,deadline_3: dateString } });
+  set_deadline3 = (date, dateString) => {
+    this.setState({ contractData: { ...this.state.contractData, deadline_3: dateString } });
   }
   onFirstPaidTokenChange = value => {
-    this.setState({ contractData:{...this.state.contractData,firstPaidToken: value } });
+    this.setState({ contractData: { ...this.state.contractData, firstPaidToken: value } });
   };
   onSecondPaidTokenChange = value => {
-    this.setState({ contractData:{...this.state.contractData,secondPaidToken: value } });
+    this.setState({ contractData: { ...this.state.contractData, secondPaidToken: value } });
   };
   onThirdPaidTokenChange = value => {
-    this.setState({ contractData:{...this.state.contractData,thirdPaidToken: value } });
+    this.setState({ contractData: { ...this.state.contractData, thirdPaidToken: value } });
   };
 
   renderContractEditModal = () => {
@@ -290,10 +290,10 @@ export default class JobItem extends Component {
     );
   }
 
-  requestCancelContract=()=>{
-      request_cancel_contract(this.state.contractData.id)
-      this.openNotification("Yêu cầu hủy hợp đồng của bạn đã được gửi lên")
-      this.setState({showContractDetailModal:false})
+  requestCancelContract = () => {
+    request_cancel_contract(this.state.contractData.id)
+    this.openNotification("Yêu cầu hủy hợp đồng của bạn đã được gửi lên")
+    this.setState({ showContractDetailModal: false })
   }
   renderContractDetailModal = () => {
     const { contractData } = this.state;
@@ -319,12 +319,20 @@ export default class JobItem extends Component {
           />
 
           {/*----deadline 1-----*/}
-          {!contractData.paid_2_status ||
+          {!contractData.paid_1_status ||
             contractData.paid_1_status === "pending" ? (
               <Step
                 status="wait"
                 title="Giai đoạn 1"
                 icon={<Icon type="credit-card" />}
+              />
+            ) : null}
+          {!contractData.paid_1_status ||
+            contractData.paid_1_status === "activated" ? (
+              <Step
+                status="finish"
+                title="Giai đoạn 1"
+                icon={<Icon type="flag" />}
               />
             ) : null}
           {contractData.paid_1_status === "requesting" ? (
@@ -352,6 +360,14 @@ export default class JobItem extends Component {
                 icon={<Icon type="credit-card" />}
               />
             ) : null}
+          {!contractData.paid_2_status ||
+            contractData.paid_2_status === "activated" ? (
+              <Step
+                status="finish"
+                title="Giai đoạn 2"
+                icon={<Icon type="flag" />}
+              />
+            ) : null}
           {contractData.paid_2_status === "requesting" ? (
             <Step
               status="process"
@@ -375,6 +391,14 @@ export default class JobItem extends Component {
                 status="wait"
                 title="Giai đoạn 3"
                 icon={<Icon type="credit-card" />}
+              />
+            ) : null}
+          {!contractData.paid_3_status ||
+            contractData.paid_3_status === "activated" ? (
+              <Step
+                status="finish"
+                title="Giai đoạn 3"
+                icon={<Icon type="flag" />}
               />
             ) : null}
           {contractData.paid_3_status === "requesting" ? (
@@ -534,13 +558,14 @@ export default class JobItem extends Component {
         )}
 
         <div className="ContractModalFooter">
-        <Button type="default" onClick={this.requestCancelContract}>
-            Hủy hợp đồng
-          </Button>
+          {contractData.paid_3_status !== "paid" &&
+            <Button type="default" onClick={this.requestCancelContract}>
+              Hủy hợp đồng
+          </Button>}
           <Button type="primary" onClick={this.closeContractViewModal}>
             Close
           </Button>
-          
+
 
 
         </div>
@@ -587,7 +612,7 @@ export default class JobItem extends Component {
             Xem lại hợp đồng
           </Menu.Item>
         )}
-         {this.props.data.status === "request_cancel" && (
+        {this.props.data.status === "request_cancel" && (
           <Menu.Item key="viewContract">
             <Icon type="solution" />
             Xem lại hợp đồng
